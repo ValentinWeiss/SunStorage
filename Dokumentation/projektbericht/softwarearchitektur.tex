@@ -1,0 +1,244 @@
+\subsection{Softwarearchitektur}
+\chapterauthor{Johannes Treske}
+
+Die Software des Projektes wurde auf Grundlage des ESP-IDF Frameworks von Espressif geschrieben.
+Zur Wahl stand zum einen das ESP-IDF Framework und zum anderen das Arduino Framework.
+Das Arduino Framework bietet bereits viele vorgefertigte Bibliotheken.
+Es enthält beispielsweise Funktionen zur Ansteuerung verschiedener Sensoren, was die Komplexität des eigenen Codes stark vereinfacht hätte.
+Jedoch hat das Arduino Framework auch einige Nachteile, wie einen größeren Speicherverbrauch oder einen limitierten FreeRTOS Support.
+Dadurch ist unsere Wahl auf das, auch in der Industrie häufig eingesetzte, ESP-IDF Framework gefallen.
+Dieses bietet vollständigen FreeRTOS Support und stellt unter anderem Treiber für alle Funktionalitäten der ESP32 Plattform bereit.
+
+\subsubsection{FreeRTOS}
+\chapterauthor{Johannes Treske}
+
+FreeRTOS ist ein Open Source Real-Time Operating System für Mikrocontroller und Mikroprozessoren.
+Für das Projekt relevante Funktionen von FreeRTOS sind:
+\begin{itemize}
+    \item Task Scheduling mit preemptiv Scheduling Verfahren
+    \item Erstellen von Tasks mit Prioritäten
+    \item Bereitstellen von weiteren Funktionen im Zusammenhang mit Tasks, wie zum Beispiel Delay Funktionen
+    \item Erstellen und Nutzen von Mutexen
+\end{itemize}
+
+\subsubsection{Aufbau der Software}
+\chapterauthor{Johannes Treske}
+
+Die Software des Projektes ist in zwei Teile aufgeteilt.
+Des Web-Frontend ist der Teil der Software, der auf Anfrage über WLAN an den Client ausgeliefert wird.
+Anschließend wird dieser auf Client-Seite ausgeführt.
+Dieser Teil der Software wird komprimiert auf dem Flash-Speicher des Haupt-ESP gespeichert.
+In \autoref{Frontend} wird der Aufbau der Webseite genau beschrieben.
+Der zweite Teil der Software ist das Backend, welches in Software für Haupt- und Neben-ESP aufgeteilt ist.
+
+Als Programmiersprache wird für die Software auf den ESP32 C verwendet.
+Die Software besteht aus einzelnen Tasks, die mithilfe des FreeRTOS Schedulers nebenläufig ausgeführt werden.
+Um die Software für beide ESP32 in einem Projekt entwickeln zu können wird der Code mit den build flags \textit{-DTX} für den Haupt-ESP und \textit{-DRX} für den Neben-ESP kompiliert.
+Dadurch ist es möglich im Code, Abschnitte die nur für einen der beiden Controller bestimmt sind, mit
+\begin{lstlisting}[language=C, frame=none]
+#ifdef TX
+    // code
+#endif
+\end{lstlisting}
+beziehungsweise
+\begin{lstlisting}[language=C, frame=none]
+#ifdef RX
+    // code
+#endif
+\end{lstlisting}
+abzugrenzen.
+So wird nur der Programmcode erzeugt, der für den jeweiligen Controller relevant ist.
+Alles was nicht abgegrenzt ist, wird immer kompiliert.
+
+\paragraph{Task \textit{app\_main}}
+\chapterauthor{Johannes Treske}
+\textit{app\_main} ist die Funktion, die nach dem Starten des Programms von FreeRTOS als Task initialisiert und aufgerufen wird.
+Zu diesem Zeitpunkt ist dies der einzige initialisierte Task.
+Da \textit{app\_main} sowohl für den Haupt-ESP als auch für den Neben-ESP kompiliert werden muss, werden die Bereiche für den Haupt- und Neben-ESP, wie oben beschrieben, innerhalb der Funktion angegrenzt.
+
+Die Aufgaben von \textit{app\_main} sind:
+\begin{enumerate}
+    \item \textbf{Initialisieren der Module}\newline
+          Die Initialisierung der Module ist in eine eigene Funktion \textit{globalInit} ausgelagert, um eine bessere Übersicht zu wahren.
+          Es ist wichtig, alle Module an einem Ort zu initialisieren, da einige Module von mehreren Tasks verwendet werden. 
+          Dadurch wird eine Mehrfachinitialisierung verhindert.
+          Bei kritischen Modulen führt das Fehlschlagen der Initialisierung zu einem Reset des Systems.
+          Als kritische Module werden die Module betrachtet, die zur Überwachung des Akkus und für das Laden notwendig sind.
+          Einige Module sind nur für den Haupt-ESP oder nur für den Neben-ESP relevant und werden entsprechend abgegrenzt.
+          Der Erfolg der Initialisierung eines Moduls wird in einer globalen Variable pro Modul festgehalten.
+          Dadurch können Tasks vor der Nutzung feststellen, ob das entsprechende Modul korrekt initialisiert wurde.
+    \item \textbf{Erstellen der Tasks}\newline
+          Das Erstellen der Tasks erfolgt mithilfe der FreeRTOS Funktion \textit{xTaskCreate}.
+          Angegeben wird die C-Funktion, die den Task umsetzt, sowie die zur Verfügung gestellte Stack-Größe und die Taskpriorität.
+          Wir haben für alle Tasks die Idle-Priorität gewählt, da es keinen Task gibt, der eine höhere Priorität erhalten sollte.
+          Die Stack-Größe haben wir an die tatsächlich benötigte Stack-Größe angepasst, waren jedoch großzügig, da der ESP32 über ausreichend Arbeitsspeicher für unsere Anwendung verfügt.
+          Sobald ein Task erstellt wurde, erhält er automatisch vom Scheduler Rechenzeit.
+    \item \textbf{Return}\newline
+          \textit{app\_main} ist der einzige Task, der enden darf.
+          Alle anderen Tasks müssen endlos laufen.
+\end{enumerate}
+
+\paragraph{Task \textit{adcReadTask}}
+\chapterauthor{Lukas Eigenstetter}
+Der \textit{adcReadTask} läuft auf dem Haupt-ESP.
+Die Aufgaben sind:
+\begin{enumerate}
+    \item \textbf{Auslesen der ADC-Pins}\newline
+          Die ausgelesenen Werte sind die Spannung der höheren und der niedrigeren Batteriezelle, die Spannung am Ladegerät-Shunt, die Spannung am System-Shunt und die Spannung am Coulomb-Counter.
+    \item \textbf{Anwendung der Formeln zur Bestimmung der tatsächlichen Werte}\newline
+          Die Formeln sind Teil von \autoref{akkuCircuit}.
+    \item \textbf{Bilden von Mittelwerten und Abspeichern der Werte für andere Tasks}\newline
+          Das verwendete Verfahren wird in \autoref{akkuCircuit} beschrieben.
+\end{enumerate}
+
+\paragraph{Task \textit{batteryChargerTask}}
+\chapterauthor{Lukas Eigenstetter}
+Der \textit{batteryChargerTask} läuft auf dem Haupt-ESP.
+Dieser Task dient zur Ansteuerung des Ladegerätes.
+Er setzt die in \autoref{Akkuladegerät} beschriebene State Machine um.
+Falls das Ladegerät aktiv ist, wird das PWM zur Ladestromsteuerung angepasst.
+Außerdem liest er den Temperatursensor des Barometers aus, um eine Überhitzung zu erkennen und führt Cell-Balancing durch.
+
+\paragraph{Task \textit{socCalibrationTask}}
+\chapterauthor{Lukas Eigenstetter}
+Dieser Task läuft auf dem Haupt-ESP.
+Er dient dazu, den Ladezustandswert des Akkus neu zu kalibrieren.
+Das verwendete Verfahren wird in \autoref{Ladezustandsabschätzung} genauer beschrieben.\\
+Zur Messung werden das Ladegerät und der Buck-Converter abgeschaltet.
+Die Wiederanschaltung der Komponenten kann dazu führen, dass extern herbeigeführte Veränderungen überschrieben werden.
+Dieses Lost-Update wurde bis zur Abgabe nicht behoben.
+
+\paragraph{Task \textit{storeReadingsTask}}
+\chapterauthor{Johannes Treske}
+Der \textit{storeReadingsTask} läuft auf dem Haupt-ESP.
+Dieser Task dient dazu, Messwerte zu einem bestimmten Zeitpunkt aufzunehmen und in der Datenbank zu speichern.
+Die Werte aus der Datenbank können dann über das Webinterface graphisch dargestellt werden.
+Seine Aufgaben sind:
+\begin{enumerate}
+    \item \textbf{Auslesen der Messwerte}
+          Die Messwerte, die für die Datenbank relevant sind, werden von den entsprechenden Modulen ausgelesen.
+          Die Werte eines Moduls werden nur dann ausgelesen, wenn es erfolgreich initialisiert wurde.
+          Andernfalls wird das Modul übersprungen und in die entsprechenden Spalten in der Datenbank wird \emph{NULL} eingetragen.
+          \emph{NULL} wird auch dann eingetragen, wenn der Messwert nicht verfügbar ist, so zum Beispiel, wenn das GPS Modul keine Satelliten findet.
+          Als ID dient ein Timestamp nach dem folgenden Schema:
+          \begin{center}
+              \textbf{YYYYMMDDhhmmss}
+          \end{center}
+          Dieser wird aus den Daten des GPS Moduls ermittelt.
+    \item \textbf{Speichern des Datenpaketes in der Datenbank}
+\end{enumerate}
+
+\paragraph{Task \textit{sunAlignTask}}
+\chapterauthor{Felix Wagner}
+Im \textit{sunAlignTask} werden alle nötigen Daten für die Berechnung der aktuellen Sonnenposition gesammelt.
+Primär sind hierfür die Längen- und Breitengrade, welche vom GPS-Modul bereitgestellt werden, sowie das aktuelle Datum und Uhrzeit notwendig.
+Daraus kann über den im Webfrontend beschriebenen Algorithmus die aktuelle Sonnenposition in Form von Azimut und Elevation berechnet werden.
+\newline
+Außerdem werden noch weitere Daten gesammelt, welche an den Neben-ESP übergeben werden.
+\begin{itemize}
+    \item Kompass: Abweichung vom magnetischen Nordpol
+    \item GPS-Sensor: Abweichung vom wahren Nordpol (Magnetic Variation)
+    \item Beschleunigungssensor: Lage des Apparats
+\end{itemize}
+
+Die Beschleunigungswerte werden in die State-Variablen geladen.
+Nachdem alle Daten gesammelt wurden, wird der aktuelle Betriebsmodus der Panel-Ausrichtung über die Statevariable abgefragt.
+Ist die automatische Ausrichtung aktiv, so wird die aktuelle Abweichung vom Nordpol zum Azimut addiert.
+Azimut und Elevation  werden dann in die State-Variable geschrieben.
+Im manuellen Modus können die Azimut-, Elevation- und Kompasswerte mithilfe von Eingabefeldern im Webinterface eingestellt werden.
+Diese werden anschließend ebenfalls als Azimut und Elevation in die State-Variablen geladen. In \autoref{tableStateSunAlign} werden alle nötigen State-Variablen aufgelistet:
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            Klasse & Name                  & Beschreibung                                        \\
+            \Xhline{3\arrayrulewidth}
+            positioning & manualMode & Einstellung des automatischen Modus im Webinterface       \\
+            \hline
+            positioning & azimuth           & Azimut aus Webinterface                            \\
+            \hline
+            positioning & elevation         & Elevation aus Webinterface                         \\
+            \hline
+            positioning & angleToNorth      & Nordabweichung aus Webinterface                    \\
+            \hline
+            esp2 & azimuth        & Übergebene Azimut an Neben-ESP                               \\
+            \hline
+            esp2 & elevation      & Übergebene Elevation an Neben-ESP                            \\
+            \hline
+            esp2 & (x,y,z)Gyro           & Weiterleitung der Beschleunigungswerte an Neben-ESP   \\
+            \hline
+        \end{tabular}
+        \caption{State-Variablen für sunAlignTask}
+        \label{tableStateSunAlign}
+    \end{center}
+\end{table}
+
+
+\paragraph{Task \textit{usbChargerTask}}
+\chapterauthor{Lukas Eigenstetter}
+Der \textit{usbChargerTask} läuft auf dem Haupt-ESP und dient zur Anpassung der Ausgänge der USB-Ladeschnittstelle.
+Die DAC-PINs werden auf eine bestimmte Spannung eingestellt.
+Somit kann dem zu ladenden Endgerät die maximale Ladeleistung signalisiert werden.
+Dies wir in \autoref{usbSchnittstelle} detailliert erklärt.
+
+
+\paragraph{Task \textit{writeSystemStateTask}}
+\chapterauthor{Lukas Eigenstetter}
+Mithilfe des \textit{writeSystemStateTask} speichert der Haupt-ESP den Systemzustand regelmäßig.
+Der Zustand liegt als JSON Objekt vor.
+Das Objekt wird als Datei \textbf{state.txt} in das Hauptverzeichnis der SD-Card abgelegt.
+Der Systemzustand wird in \autoref{Systemzustand} detailliert erklärt.
+
+Falls eine Veränderung des Zustands seit der letzten Ausführung des Tasks vorliegt,
+wird der State an den Neben-ESP gesendet.
+
+\paragraph{Task \textit{statsCalcTask}}
+\chapterauthor{Matthias Unterrainer}
+
+
+\paragraph{Task \textit{displayTask}}
+\chapterauthor{Matthias Unterrainer}
+
+
+\paragraph{Task \textit{displayButtonsTask}}
+\chapterauthor{Matthias Unterrainer}
+
+
+\paragraph{Task \textit{espCommReceiveTask}}
+\chapterauthor{Johannes Treske}
+Der \textit{espCommReceiveTask} läuft auf dem Neben-ESP.
+Verändert sich der System-State verändert, so wird ein flag gesetzt, das dem \emph{writeSystemStateTask} signalisiert, dass der State übertragen werden soll. 
+Dann sendet der Haupt-ESP den State im JSON-Format an den Neben-ESP.
+Dabei wird das JSON Objekt als eine einzige Zeile gesendet.
+Der \textit{espCommReceiveTask} dient dazu, den gesendeten State zu empfangen und auf dem Neben-ESP für die anderen Tasks abzuspeichern.
+
+\paragraph{Task \textit{panelAlignTask}}
+\chapterauthor{Felix Wagner}
+Der Neben-ESP führt außerdem noch den \textit{panelAlignTask} aus.
+Dabei werden die vom Haupt-ESP in die State-Variablen geladenen Beschleunigungswerte, sowie die Azimut und Elevation geladen (siehe \autoref{tableStatePanelAlign}).
+Anschließend werden die benötigten Stellungen der Servomotoren unter Berücksichtigung der Lage des SunStorage-Aufbaus berechnet.
+Mit diesen Werten erfolgt die Stellung der Servomotoren.
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            Klasse & Name                  & Beschreibung                                        \\
+            \Xhline{3\arrayrulewidth}
+            esp2 & azimuth        & Übergebene Azimut an Neben-ESP                               \\
+            \hline
+            esp2 & elevation      & Übergebene Elevation an Neben-ESP                            \\
+            \hline
+            esp2 & (x,y,z)Gyro           & Weiterleitung der Beschleunigungswerte an Neben-ESP   \\
+            \hline
+        \end{tabular}
+        \caption{State-Variablen für panelAlignTask}
+        \label{tableStatePanelAlign}
+    \end{center}
+\end{table}
+
+
+
+
+

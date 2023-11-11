@@ -1,0 +1,75 @@
+{
+	"charger":	{
+		"usbMode":	0,
+		"chargerMode":	0,
+		"currentTarget":	100,
+		"thresholdVoltage":	200,
+		"maximumVoltage":	4050,
+		"trickleThreshold":	3900,
+		"batterySize":	1500,
+		"overheatedTemperature":	40,
+		"highPowerEnabled":	0,
+		"overheatedHysteresis":	5
+	},
+	"positioning":	{
+		"latitude":	0,
+		"longitude":	0,
+		"azimuth":	0,
+		"elevation":	0,
+		"angleToNorth":	0,
+		"manualMode":	0
+	},
+	"display":	{
+		"powerSolar":	1,
+		"dailyProduction":	1,
+		"soc":	1,
+		"voltageLowerCell":	0,
+		"voltageUpperCell":	0,
+		"solarCurrent":	0,
+		"chargingCurrent":	0,
+		"systemCurrent":	0,
+		"powerSystem":	0,
+		"powerCharging":	0,
+		"dailyConsumption":	0,
+		"thresholdVoltage":	0,
+		"maximumVoltage":	0,
+		"trickleThreshold":	0,
+		"highPowerCircuit":	0,
+		"batteryTemperature":	0,
+		"batteryOverheatedHysteresis":	0,
+		"batterySize":	0,
+		"currentTarget":	0,
+		"chargerState":	0,
+		"usbMode":	0,
+		"azimuth":	0,
+		"elevation":	0,
+		"manualAdjustment":	0,
+		"nightShutdownEnabled":	0,
+		"nightPositionAzimuth":	0,
+		"nightPositionElevation":	0,
+		"latitude":	0,
+		"longitude":	0,
+		"angleToNorth":	0,
+		"time":	0,
+		"httpDisableTimeout":	0,
+		"gpsDisableTimeout":	0,
+		"dcfDisableTimeout":	0,
+		"wifiDisableTimeout":	0
+	},
+	"nightShutdown":	{
+		"enabled":	1,
+		"azimuth":	0,
+		"elevation":	0
+	},
+	"esp2":	{
+		"azimuth":	0,
+		"elevation":	0,
+		"xGyro":	0,
+		"yGyro":	0,
+		"zGyro":	0,
+		"heading":	0
+	},
+	"stats":	{
+		"dailyProduction":	0
+	}
+}

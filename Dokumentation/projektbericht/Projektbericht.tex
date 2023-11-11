@@ -1,0 +1,871 @@
+\documentclass[12pt,a4paper,bibliography=totocnumbered,listof=totocnumbered]{article}
+% packages:
+\usepackage{float}
+\usepackage[ngerman]{babel}
+%\RequirePackage[nottoc,numbib]{tocbibind}
+\RequirePackage[hidelinks]{hyperref}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{pdfpages}
+\usepackage[backend=biber, style=ieee, isbn=false, doi=false, url=false,block=space,pagetracker=true, backref=true]{biblatex}
+\usepackage{titlesec}
+\usepackage{makecell}
+\usepackage{textgreek}
+\usepackage{multirow}
+\usepackage{ltablex}
+
+\bibliography{quellen.bib}
+\input{lib/includes.tex}
+\input{lib/commands.tex}
+
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\newcommand{\chapterauthor}[1]{%
+  {\parindent0pt\vspace*{-5pt}%
+  \linespread{1.1}\small\scshape#1%
+  \par\nobreak\vspace*{3pt}}
+  \@afterheading%
+}
+\makeatother
+
+
+\begin{document}
+\pagenumbering{gobble}
+----------------------------------------------------------------------------------------------------------
+% Titelseite
+% ----------------------------------------------------------------------------------------------------------
+\MyTitlepage[pics/logo.png]{6}{
+    \texttt{lukas.eigenstetter@st.oth-regensburg.de}\\
+	\texttt{philipp.thaler@st.oth-regensburg.de}\\    
+    \texttt{johannes.treske@st.oth-regensburg.de}\\    
+    \texttt{matthias.unterrainer@st.oth-regensburg.de}\\
+    \texttt{felix.wagner@st.oth-regensburg.de}\\
+    \texttt{valentin.weiss@st.oth-regensburg.de}}
+
+\cleardoublepage
+% ----------------------------------------------------------------------------------------------------------
+% Inhaltsverzeichnis
+% ----------------------------------------------------------------------------------------------------------
+\pagenumbering{Roman}
+\tableofcontents
+\pagebreak
+\pagenumbering{arabic}
+
+% ----------------------------------------------------------------------------------------------------------
+% Inhalt
+% ----------------------------------------------------------------------------------------------------------
+% Abstände Überschrift
+%\titlespacing{\section}{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 2pt}
+%\titlespacing{\subsection}{0pt}{12pt plus 4pt minus 2pt}{4pt plus 2pt minus 2pt}
+%\titlespacing{\subsubsection}{0pt}{12pt plus 4pt minus 2pt}{2pt plus 2pt minus 2pt}
+
+% Kopfzeile
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+\renewcommand{\subsubsectionmark}[1]{}
+\lhead{Kapitel \thesection}
+\rhead{\rightmark}
+
+\onehalfspacing
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theHsection}{\arabic{section}}
+\setcounter{section}{0}
+
+\newpage
+% ----------------------------------------------------------------------------------
+% Kapitel: Allgemeine Informationen
+% ----------------------------------------------------------------------------------
+\section{Stundenlisten}
+In diesem Kapitel sind die Stundenlisten der Gruppenmitglieder in alphabetischer Reihenfolge aufgelistet.
+Woche 1 ist jeweils die Woche, die am 20. März 2023 beginnt.
+Woche 14 bis 17 fallen in den Zeitraum nach der Abschlusspräsentation.
+Sie werden daher in einem gemeinsamen Abschnitt zusammengefasst.
+
+\newpage
+\subsection{Lukas Eigenstetter}
+\input{Stundenlisten/LukasEigenstetter.tex}
+
+\subsection{Philipp Thaler}
+\input{Stundenlisten/PhilippThaler.tex}
+
+\subsection{Johannes Treske}
+\input{Stundenlisten/JohannesTreske.tex}
+
+\subsection{Matthias Unterrainer}
+\input{Stundenlisten/MatthiasUnterrainer.tex}
+
+\subsection{Felix Wagner}
+\input{Stundenlisten/FelixWagner.tex}
+
+\subsection{Valentin Weiß}
+\input{Stundenlisten/ValentinWeiss.tex}
+
+\section{Dokumentation}\label{Dokumentation}
+\chapterauthor{Felix Wagner}
+SunStorage ist ein gemeinschaftliches Projekt, welches im Rahmen der Vorlesung \glqq Datenverarbeitung in der Technik\grqq \ druchgeführt wurde.
+Ziel dieser Vorlesung ist die Planung, Dokumentation, Implementierung und Testen eines Projektes aus dem Bereich der Technischen Informatik durchzuführen. 
+Wichtig hierbei ist auch das Erlernen von Teamfähigkeiten, um mit seinen Kommilitonen effektiv zusammenarbeiten zu können.\\
+Nach der Projektsuche hat sich das Team letztendlich für das Projekt SunStorage entschieden.
+Gerade in Zeiten großer Strompreiserhöhungen ist es für viele Bürger wichtig, eine autonome Stromversorgung sicherzustellen. 
+In den vergangenen Jahren gab es große Fortschritte in den Bereichen Photovoltaik und Speichertechnologie. 
+Viele Haushalte besitzen bereits eine Kombination dieser Technologien in Form einer Photovoltaikanlage mit Batteriespeicher und in industriellen Anlagen können die Panele optimal der Sonne ausgerichtet werden.
+Für tragbare Geräte gibt es teilweise auch bereits derartige Produkte. 
+Diese sind aber wenig effizient, da sich diese nicht selbst in einen optimalen Winkel 
+zur Sonne ausrichten können, und nur selten vernetzbar sind.\\
+Ziel von SunStorage ist es, die Stromspeicherung, eine optimale Sonnenausrichtung und die Vernetzung in das Heimenetz in einem mobilen System zu vereinen, um damit verschiedene USB-Verbraucher betrieben zu können.
+
+\subsection{Projektüberblick}
+\chapterauthor{Felix Wagner}
+Nun wird auf die einzelnen Komponenten des SunStorage-Systems und deren Zusammenspiel eingegangen.\\
+Der hölzerne Grundaufbau vereint die Elektronikplattform mit der Ausrichtungsmechanik der Solarpanele. 
+Somit kann das Gesamtsystem schnell an andere Orte verlegt werden.\\
+Auf der Elektronikplattform ist unter anderem ein Batterie Management System verbaut, welches mit dem produzierten Strom
+der Solarpanele die Lithium Polymer Akkus läd. Diese Akkus stellen anschließend den Strom für die restlichen
+Komponenten zur Verfügung und werden durch einen Temperatursensor überwacht.\\
+Um den Konfigurationsaufwand für den Nutzer gering zu halten, sind viele verschiedene Sensoren nötig.
+Ein GPS-Modul stellt dabei hierbei die für die Berechnung der Sonnenposition wichtigen Standortkoordinaten,
+sowie Informationen über die magnetische Varianz zum Nordpol und einen Zeitstempel mit Datum und Uhrzeit bereit.
+Das Kompassmodul gibt die Ausrichtung in die nördliche Himmelsrichtung wieder und der Beschleunigungssensor
+erkennt mögliche Schieflagen des SunStorage-Systems. Durch all diese Sensoren ist es nach einem Positionswechsel
+des Aufbau nicht nötig dem System Informationen über den neuen Standort mitzuteilen.\\
+
+
+
+\input{mechanischerAufbau.tex}
+
+\subsubsection{Halterung für Hardware}
+\chapterauthor{Lukas Eigenstetter}
+Die Sensoren, Platinen und Module sind auf einer Holzplatte montiert.
+Diese stammen aus Resten im Labor.
+Alle Module, die Befestigungslöcher besitzen, wurden mithilfe von Schrauben fixiert.
+In die Platinen für Neben-ESP, Haupt-ESP und Displaysteuerung wurden zu diesem  Zweck größere Löcher gebohrt.
+Da die Löcher des DCF-77 Moduls sehr klein sind, wurde es mithilfe von isolierten Drähten festgeklemmt.
+Diese wurden auf der Unterseite des Bretts festgeklebt und durch Löcher nach oben geführt.
+Lediglich der Kompasssensor und die USB-Ladeschnittstelle wurden direkt mit Heißkleber befestigt.
+Um trotz überstehender Schrauben einen geraden und festen Stand zu garantieren, wurden links und rechts auf der Unterseite Latten festgeklebt.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=16.5cm,keepaspectratio=true]{pics/Fotos/brett.JPG}
+    \caption{Aufbau der Module und Sensoren auf der Holzplatte}\label{brett}
+\end{figure}
+
+\autoref{brett} zeigt den Aufbau auf dem Brett.
+Der Temperatursensor ist nicht sichtbar, da er unter den Akkus liegt.
+Das Akkufach wurde durch zwei Schrauben und einen Klettverschluss realisiert.
+Die Schrauben sorgen dafür, dass der Akku nicht nach vorne oder hinten rutscht und der Klettverschluss verhindert eine Bewegung in die anderen Richtungen.
+Um die Sichtbarkeit des Displays zu verbessern, wurden Kabelbinder verwendet.
+Die Antenne des GPS-Moduls ist an der Seite des mechanischen Aufbaus montiert.
+Die Halterung wird zur Inbetriebnahme in den mechanischen Aufbau gelegt und die Antenne wird mit dem GPS-Modul verbunden.
+So ist Hardware unabhängig vom Aufbau und kann einfach gewartet werden.
+Außerdem können fast alle Module nach dem Projekt wieder verwendet werden.\\
+Problematisch am Aufbau ist, dass er durch die vielen Kabel sehr unübersichtlich ist.
+Ein festes Verlöten der Module auf der Platine wäre eine Verbesserung.
+
+\input{softwarearchitektur.tex}
+
+\input{Projektbericht_Frontend.tex}
+
+\subsection{Elektronik}
+\chapterauthor{Lukas Eigenstetter}
+Ein wichtiger Teil des Projektes war der Aufbau der Elektronik.\\
+Diese umfasst zum einen die Stormversorgung der Controller und Sensoren.
+Zusätzlich wurde ein Ladegerät, das den Strom vom Solar-Panel in den Akku steuert, entworfen.
+Um eine genaue Regelung zu erlauben, mussten ein Messschaltkreis gebaut werden.
+Da Strommessungen über Spannungsabfall an Shunts sehr ungenau sind, wurde zusätzlich ein Coulomb-Counter entworfen und verbaut.\\
+In diesem Kapitel werden die umgesetzten Schaltkreise und deren Steuerung in Software erklärt.
+Zusätzlich werden Probleme und Alternativen erklärt.\\
+Die komplizierteren Schaltkreise wurden zunächst mit dem Falstad Circuit Simulator Applet getestet. \autocite{falstad}
+Dies ist Umgebung, die ein einfaches Entwerfen und Testen erlaubt.
+Die Abbildungen der Teilschaltpläne wurden auch mit dieser Software erstellt.
+
+\subsubsection{Stromversorgung}
+\chapterauthor{Lukas Eigenstetter}
+Die Stromversorgung für Controller und Sensoren wird mittels eines Linearreglers realisiert.
+Dieser reguliert die nicht konstante Batteriespannung, die im Bereich von 7 - 8.4 V liegen kann, auf einen konstanten Wert von 5 V.
+Verbaut wurde ein Regler vom Typ 7805CV.\\
+Die standardmäßige Schaltung sieht einen 330 nF Kondensator am Eingang V\_IN und einen 100 nF Kondensator am Ausgang vor. \autocite{linearregler}
+Verbaut wurden Kunststofffolienkondenstoren.\\
+Zusätzlich sind am Ein- und Ausgang 100 \textmu F Aluminium-Elektrolytkondensatoren verwendet.
+Der Eingangskondensator dient dazu, Spannungserhöhungen- und Abfälle durch Veränderungen in der Batteriespannung abzufedern.
+Durch den Ausgangskondensator werden Verbrauchsspitzen abgefedert.\\
+Der Linearregler kann dauerhaft einen Ausgangsstrom von etwa 500 mA erzeugen.
+Dieser Strom reicht zur Versorgung der Module und des Displays aus.\\
+Tabelle \autoref{PowerConsumption} zeigt den gemessenen Verbrauch der Module.
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|l|}
+            \hline
+            Modul                 & Stromverbrauch in mA       & Spannung in Volt \\
+            \Xhline{3\arrayrulewidth}
+            GPS                   & 100                        & 5.0              \\
+            \hline
+            Beschleunigungssensor & 0                          & 3.3              \\
+            \hline
+            Kompass               & 0                          & 3.3              \\
+            \hline
+            Display               & 0 - 5 (je nach Helligkeit) & 5.0              \\
+            \hline
+            SD-Card               & 40                         & 5.0              \\
+            \hline
+            Temperatursensor      & 0                          & 3.3              \\
+            \hline
+            ESP32                 & 40 - 60 (je nach Last)     & 5                \\
+            \hline
+        \end{tabular}
+        \caption{Gemessener Stromverbrauch der Module\\
+            Der gesamte Stromverbrauch liegt im Betrieb deutlich über 200 mA.}
+        \label{PowerConsumption}
+    \end{center}
+\end{table}
+
+Laut Datenblatt soll das GPS-Modul lediglich mit maximal 3.6 V versorgt werden.
+Aufgrund des hohen Verbrauchs führt dies dazu, dass der Linearregler eines ESP32, der etwa 80 mA abgeben kann, nicht ausreicht.
+Da das Modul einen USB Anschluss und einen eigenen Regler besitzt, ist es möglich auch 5 V zu verwenden.
+Daher wurde dieses Modul ebenfalls an die 5 V Quelle angeschlossen.\\
+Der hohe Stromverbrauch des Systems führt dazu, dass im realistischen Betrieb nur unter guten Wetterbedingungen mehr Strom produziert als verbraucht wird.
+Um langfristig eine positive Energiebilanz zu erreichen, müssten Display, GPS und die weiteren Module ausschaltet und nur durch eine Nutzereingabe aktiviert werden.
+Diese Verbesserung konnte nicht mehr realisiert werden.\\
+Ein weiteres Problem bei der Stromversorgung ist die Verwendung zu dünner Kabel.
+Alle Verbindungen wurden mittels der im Labor verfügbaren Jumperkabel realisiert.
+Dies hat den Vorteil, dass die Sensoren für zukünftige Projekte weiter verwendet werden können.
+Ein festes Verlöten der Module wäre eine sinnvolle Alternative gewesen, da so der Widerstand durch die Kabel und Stecker vermieden wird.
+Zudem hätte dies für eine höhere Übersichtlichkeit des Aufbaus gesorgt.
+
+\subsubsection{High Power Circuit}\label{HPC}
+\chapterauthor{Lukas Eigenstetter}
+Da die Servos und die USB-Schnittstelle einen deutlich höheren Stromverbrauch als die Module haben, wurde zusätzlich zum Linearregler eine Buck-Converter Schaltung verbaut.
+Diese basiert auf einem LM2576ADJ Spannungsregler im TO-220 Format. \autocite{buckConverter}
+Im Gegensatz zum Linearregler, der kurzzeitig 1.5 A und langfristig nur 500 mA liefert, kann der Buck Converter dauerhaft 3 A Ausgangsstrom erzeugen.
+Mit einer Verlustleistung von etwa 20 Prozent ist dieser deutlich energieeffizienter als der Linearregler, der etwa 40 Prozent Verlustleistung hat.
+Die Variante \emph{ADJ} hat den Vorteil, dass die Ausgangsspannung durch einen Feedbackwiderstand eingestellt werden kann.
+Der Feedbackanschluss ist durch einen Spannungsteiler von 2.85 k\textOmega \ und 910\textOmega so eingestellt, dass im Freilauf minimal mehr als 5 V Ausgangspannung erzeugt werden.
+Der Spannungsregler kann durch einen PIN ausgeschaltet werden, was etwa bei der Nachtabschaltung und für die Kalibrierung des State of Charge verwendet wird.\\
+Nachteilhaft ist jedoch, dass dieses Bauteil ein PWM von 52 kHz erzeugt und so den den DCF-77 Empfänger stört.
+Dies ist ein weiterer Grund, weshalb das DCF-77 Modul nicht im finalen Aufbau verwendet wird.\\
+An den Ausgang muss daher eine Filterschaltung gebaut werden.
+Diese besteht aus mehreren Aluminium-Elektrolytkondensatoren, die in Summe 1 mF haben und einer 6 A 0.1 mH Spule.\\
+Da keine Zenerdiode verfügbar war, wurde eine NP-Diode vom Typ BY-255 als Freilaufdiode verwendet.
+So wird die Beispielschaltung aus dem Datenblatt mit den vorhandenen Mitteln so gut wie möglich realisiert. \autoref{buckConverter} zeigt die Schaltung aus dem Datenblatt.
+
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=13cm,keepaspectratio=true]{pics/buckConverter.png}
+    \caption{Schaltplan des Buck Converters \autocite{buckConverter}}
+    \label{buckConverter}
+\end{figure}
+
+Unter Last kommt es bei´der Benutzung des High-Power-Circuits zu hohe Spannungsabfällen von etwa 1 V.
+Diese führen dazu, dass der Controller neu startet.
+Die Verwendung der falschen Diode ist der wahrscheinlichste Grund für die starken Spannungsschwankungen unter Last.
+Dieses Problem konnte bis zur Abgabe nicht behoben werden. \\
+Ein weiteres Problem ist, dass die verwendeten Akkus lediglich eine dauerhafte Entladerate von 1 C haben, was bei 2000 mAh einen Strom von 2 A zu Folge hat.
+Daher kann die Leistungsfähigkeit des LM2576 nicht ausgenutzt werden.\\
+Die Benutzung der USB-Schnittstelle oder der Servos bei Verwendung des High Power Circuits führt daher zum Absturz.
+Zur Abnahme wurden die Servos direkt an einen 2 s LiPo Akku angeschlossen.
+
+\subsubsection{Akkuladegerät}\label{akkuCircuit}
+\chapterauthor{Lukas Eigenstetter}
+Das Akkuladegerät dient zum Laden von Akkus mithilfe der vom Solarpanel produzierten Energie.
+Es orientiert sich an einem Blogpost zu einem Arduino-Ladegerät. \autocite{microfarat}
+In diesem Kapitel werden die Schaltung und die Formeln zur Berechnung der Werte erklärt.\\
+Der Strom wird am Haupt-ESP mithilfe eines PWM-Signals gesteuert.
+Das Signal schaltet einen BC547 Bipolartransistor. \autocite{bipo}
+Ist der Transistor auf Durchlass geschaltet, so wird der MOSFET, der den Ladestrom steuert, ausgeschaltet.
+Als Leistungstransistor wurde ein IRF5305 im TO-220 Format verwendet. \autocite{irf}
+Da die Batterie Schwingungen ausreichend dämpft, wurde keine zusätzliche Filterschaltung verbaut.
+Vor den Akku wurde eine BY-255 Diode in Laufrichtung eingebaut, um Strom von der Batterie zu den Panelen zu verhindern.
+Abbildung \autoref{charger} zeigt verbaute Schaltung. \\
+
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=9cm,keepaspectratio=true]{pics/charger.png}
+    \caption{Schaltplan des Lade-PWM}
+    \label{charger}
+\end{figure}
+
+Zusätzlich wurde Cell-Balancing realisiert.\\
+Bei Lithium Polymer Akkus tritt das Problem auf, dass einzelne Zellen unterschiedlich schnell verschleißen.
+Dann verliert eine Zelle schneller an Kapazität als die andere, wodurch die Verschlissene schneller ge- und entladen wird.
+Die Zelle mit der geringeren Kapazität kann dann überladen oder zu tief entladen werden, wenn nur die Gesamtspannung gemessen wird.\\
+In SunStorage wurde ein einfaches, passives Cell-Balancing umgesetzt. 
+Es wird jeweils die Spannung der Zellen gemessen und miteinander verglichen.
+Falls eine Zelle eine deutlich höhere Spannung als die Andere aufweist, wird sie über einen 82\textOmega \ Widerstand entladen, bis sich ein Gleichgewicht hergestellt hat. 
+Dieses Verfahren wird auch als \emph{Current Bypass} bezeichnet. 
+Die Spannungsdifferenz, ab der Balancing aktiviert wird, kann im Frontend eingestellt werden. \autocite[S. 111 - 127]{chargerBuch}\\
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=15cm,keepaspectratio=true]{pics/balancing.png}
+    \caption{Schaltplan Cell Balancing}\label{balancing}
+\end{figure}
+
+\autoref{balancing} zeigt die Schaltung, die das Cell-Balancing umsetzt.
+Für die niedrigere Zelle wird der Transistor T1 Transistor direkt über GPIO12 geschaltet.
+Da die obere Zelle auf +4 bis +8 Volt liegt und der PIN nur 3.3 Volt liefert, muss für die obere Zelle eine Schaltung mit zwei Transistoren verwendet werden.
+T2 dient zur Herstellung der für den Schaltvorgang von T3 notwendigen Spannung.
+Über T3 wird die obere Zelle entladen.
+Da P-Kanal-Transistoren verwendet werden, ist die Logik der Schaltung negativ.
+Sind die PINs beispielsweise HIGH, so fließt kein Strom.\\
+Verbaut wurden IRLML2244 Transistoren im SMT Format. \autocite{irlml}
+Um sie in ein Put-Through-Board zu integrieren, wurden sie zunächst an dickere PINs gelötet, die dann an das Board gelötet wurden.\\
+
+Zur Messung der Spannungen und Ströme werden die ADC des Haupt-ESP verwendet.
+Der Ladestrom kann über die an R8 abfallende Spannung gemessen werden.
+Ist die Spannung positiv, so fließt Strom aus der Batterie in das System. Ist sie negativ, so wird mehr produziert als konsumiert und die Batterie wird geladen.
+\autoref{messaufbau} zeigt den Teil des Systems, der für die Messungen relevant ist.
+$I_{Solar}$ ist dabei der Strom des Panels und S1 symbolisiert das PWM Signal des Ladegeräts.
+$R_{Sys}$ ist der Widerstand des Systems.
+So wird der Stromverbrauch modelliert.
+Aus Gründen der Übersichtlichkeit wurde auf die zwischen ADC- und GND geschalteten 100 nF Kondensatoren, die das Rauschen verringern, nicht eingezeichnet.
+Der vollständige Schaltplan ist in \autoref{schaltplanHaupt} dargestellt.
+
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=16cm,keepaspectratio=true]{pics/measuring.png}
+    \caption{Schaltplan des Messungsaufbau}
+    \label{messaufbau}
+\end{figure}
+
+Da negative Spannungen nicht im Ansteuerbereich des ADC liegen, muss eine Pullupschaltung verwendet werden.
+Mithilfe von R9 und R10 wird die Spannung am ADC auf 1.65 V gezogen.
+Die tatsächlich am Widerstand anliegende Spannung muss daher um 1.65 V verringert werden:
+$$ U_{ChargerShunt} = U_{0} - U_{ADC1\_5} $$
+Der Ladestrom  ergibt sich durch die folgende Formel:
+$$ I_{Charger} = I_{System} + U_{ChargerShunt} \cdot c_{SysSh}  $$
+
+Die Konstanten können \autoref{adcCali} entnommen werden.
+Die Spannung der niedrigeren Batteriezelle ergibt sich durch die Messung von ADC1\_7.
+Um die Werte im Ansteuerbereich zu halten, wird ein Spannungsteiler aus R1 und R2 gebaut.
+Zusätzlich muss die an R8 abfallende Spannung berücksichtigt werden.
+Daraus ergibt sich die folgende Formel:
+$$ U_{LowerCell} = (U_{ADC1\_7} + U_{ChargerShunt} \cdot \frac{c_{CharSh}}{c_{LC}}) \cdot c_{LC} $$
+Für die Berechnung der Gesamtspannung wurde die selbe Schaltung verwendet.
+Lediglich R4 muss erhöht werden, um den Spannungsbereich von ADC1\_4 zu erreichen.
+Auch hier muss die Spannung an R8 berücksichtigt werden:
+$$ U_{Battery} = (U_{ADC1\_4} + U_{ChargerShunt} \cdot \frac{c_{CharSh}}{c_{HC}}) \cdot c_{HC} $$
+Mithilfe der Spannungen an ADC1\_6 und ADC1\_4 kann der Strom durch D2 und R\_Sys berechnet werden.
+Die Diode wird in Laufrichtung betrieben und verhindert, dass Strom vom System in die Batterie fließt.
+Dies könnte beispielsweise passieren, wenn ein PC zum Flashen oder Monitoring angeschlossen ist.
+R\_Sys beschreibt vereinfacht den Widerstand des Systems.
+Die Differenz aus der Spannung an ADC1\_4 und ADC1\_6 ist die an R7 abfallende Spannung und damit der Systemstrom.
+Die konkrete Formel lautet:
+$$ I_{System} = (U_{ADC1\_4} \cdot c_{HC} - U_{ADC1\_6} \cdot c_{SysDiv}) \cdot c_{SysSh} $$
+Da die Widerstände nicht genau die Werte der Zeichnung besitzen, musste das Gesamtsystem kalibriert werden.
+Dies wurde durch Messungen der Ströme und Spannungen mithilfe von Multimetern umgesetzt.
+Da keine 6 k\textOmega \ Widerstände vorhanden waren, wurden 6.4 k\textOmega \ Widerstände verbaut. Diese weisen relativ hohe Abweichungen auf, weshalb die Kalibrierungswerte deutlich von den berechneten Werten abweichen.
+Die Kalibrierungswerte des Endsystems lauten:
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|l|r|}
+            \hline
+            Beschreibung                   & Symbol         & Variablenname                  & Wert \\
+            \Xhline{3\arrayrulewidth}
+            Pullup des Ladestroms          & $ U_{0} $      & VOLTAGE\_SOLAR\_0              & 1650 \\
+            \hline
+            Shunt für Ladestrom            & $ c_{SysSh} $  & SOLAR\_SHUNT\_TO\_AMPS         & 2.0  \\
+            \hline
+            Shunt für Verbrauch            & $ c_{CharSh} $ & SYSTEM\_SHUNT\_TO\_AMPS        & 2.0  \\
+            \hline
+            Spannung der niedrigeren Zelle & $ c_{LC} $     & VOLTAGE\_DIVIDER\_LOWER        & 2.26 \\
+            \hline
+            Spannung der Batterie          & $ c_{HC} $     & VOLTAGE\_DIVIDER\_BATTERY      & 4.05 \\
+            \hline
+            Spannung Verbrauchsmessung     & $ c_{SysDiv} $ & VOLTAGE\_DIVIDER\_SYS\_CURRENT & 3.65 \\
+            \hline
+        \end{tabular}
+        \caption{Kalibrierung der ADC Berechnungsparameter}
+        \label{adcCali}
+    \end{center}
+\end{table}
+
+Zum Auslesen der ADC wird die ADC-Oneshot-API der Espressif IDF verwendet.
+Da die ADC Messwerte Ausschläge von bis zu 30 mV aufweisen, wird ein gleitender Mittelwert aus den letzten Messungen gebildet.
+Dafür werden zu jedem Zeitpunkt die letzten zehn Werte betrachtet, wobei der Höchste und der Niedrigste verworfen werden.
+Aus den restlichen acht Werten wird der Mittelwert gebildet.
+Durch die Mittelwertbildung können die Schwankungen der Messungen ausgeglichen werden.
+Aufgrund der gleichzeitigen Nutzung des WiFi konnten nur PINs des ADC1 verwendet werden.\\
+Die zehn letzten Werte liegen im Programm in einem Ringbuffer vor.
+Um das Minimum und das Maximum zu bestimmen, wird dieser kopiert und die Kopie wird sortiert.
+Alle Berechnungen werden mit Fixkommazahlen im Milli-Bereich durchgeführt.\\
+Problematisch an dieser Vorgehensweise ist zum einen, dass kurze Spannungspitzen möglicherweise nicht registriert werden.
+Außerdem wirken sich Veränderungen der Messwerte erst mit einer gewissen Verzögerung erkennbar auf den Ergebniswert aus.
+Diesen Effekten wird durch eine Erhöhung der Abtastrate von 1 Hz auf 10 Hz entgegengewirkt.
+
+Die in diesem Kapitel erklärten Berechnungen sind in der Simulation korrekt.
+In \autoref{fig:graphen} ist erkennbar, dass die tatsächlich gemessenen Werte falsch sind.
+Zum einen sind die Ströme zu hoch.
+Dies führt dazu, dass unter Last auch die Spannungsmessungen verfälscht werden.
+Der genaue Grund konnte bis zum Ende des Projekts nicht gefunden werden.
+Es könnte entweder an einem nicht berücksichtigten Faktor und damit einem Fehler in der Simulation und Modellierung liegen.
+Eine weitere Möglichkeit ist ein Fehler in der Umsetzung des Schaltkreises.
+
+\subsubsection{USB-Schnittstelle}\label{usbSchnittstelle}
+\chapterauthor{Lukas Eigenstetter}
+Die USB Schnittstelle wird durch den High-Power-Circuit (\autoref{HPC}) versorgt.
+Die grundlegenden Lademodi in den meisten Handys werden durch das Anlegen einer bestimmten Spannung an den mittleren PINs des USB Ports festgelegt.
+Für höhere Ladeströme gibt es spezielle Protokolle wie beispielsweise \emph{Quick Charge}. \autocite{quickCharge}
+\autoref{UsbModi} zeigt die umgesetzten Modi und die verwendeten Schwellspannugen.
+
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|r|r|}
+            \hline
+            Modus          & PIN 1 & PIN 2 \\
+            \Xhline{3\arrayrulewidth}
+            500 mA (2.5 W) & 2.0 V & 2.0 V \\
+            \hline
+            1 A (5 W)      & 2 V   & 2.8 V \\
+            \hline
+            2,1 A (10 W)   & 2.8 V & 2.0 V \\
+            \hline
+        \end{tabular}
+        \caption{Spannung an mittleren PINs in für den jeweiligen Lademodus. PIN 1 ist neben GND. \autocite{usbProtokoll}}
+        \label{UsbModi}
+    \end{center}
+\end{table}
+
+Je nach Modus werden die DAC Pins auf die passende Spannung gesetzt.
+Der Buck-Converter kann laut Datenblatt dauerhaft einen Strom von 3 A liefern.
+Damit ist der Stromkreis auch im 10 W Modus hinreichend versorgt.
+
+\subsubsection{Coulomb-Counter}
+\chapterauthor{Matthias Unterrainer}
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.7\linewidth,keepaspectratio=true]{pics/coulomb_counter_circuit.png}
+    \caption{Schaltplan des Coulomb-Counters}
+    \label{fig:coulomb_counter}
+\end{figure}
+
+Um effektiv den Stromfluss im Schaltkreis messen zu können, wurde ein Coulomb-Counter entworfen und eingebaut.
+Ein Coulomb-Counter funktioniert im Pinzip so, dass ein bestimmter Strom durch einen Stromkreis fließt, dieser kann denn Akku laden oder entladen. Wenn jetzt die Ladung im Akku zu Beginn der Messung bekannt ist, dann kann allein durch das Wissen, wie viel Ladung ge-/entladen wurde, relativ genau bestimmt werden, wie viel Ladung im Akku noch übrig ist. Dazu wird der Strom mithilfe eines sehr kleinen Widerstandes $R_1$, unter dem ohmschen Gesetz $R = \frac{U}{I}$, welches die Beziehung zwischen Strom und Spannung beschreibt, in eine Spannung ''umgewandelt''. Da hier für $R_1$ ein Widerstand von 1 Ohm gewählt wurde, entspricht der Strom der durch den Widerstand fließt der über den Widerstand anliegenden Spannung. Da der Coulomb-Counter jedoch für Ströme bis zu 2 A ausgelegt sein sollte, was zu einer Spannung von 2 V führen würde, musste diese, aufgrund der Funktionsweise des Op-Amps, noch durch einen Spannnungsteiler reduziert werden. Hierbei wurde die Eingangsspannung durch den Spannungsteiler der sich aus $R_F$ und $R_1$ zusammen setzt, wobei $R_F$ 1 k$\Omega$ ist, auf ca. $\frac{1}{1000}$ der Eingangsspannung reduziert. Genauer auf $V_{\text{in}} \cdot \frac{1 \Omega}{1000 \Omega + 1 \Omega} = 0.\overline{000999} \cdot V_{\text{in}}$. Dadurch wird die maximale Eingangsspannung bei einer maximal Last von 2 A auf 2 mV begrenzt.\\\\
+Dies ist jedoch erst der erste Schritt, da bis jetzt nur eine Spannung äquivalent zu ca. $\frac{1}{1000}$ der Eingangsspannung an der Stelle $E$ gemessen werden kann. Dies beschreibt lediglich den aktuellen Strom, der in diesem Moment durch den Stromkreis fließt, enthält aber noch keine Informationen über die zeitliche Komponente, also darüber, wie viel Strom in einer bestimmten Zeit durch den Stromkreis geflossen ist. Um diese aussagekräftigere Messung aus den einzelnen Momentanaufnahmen zu erhalten, müssen diese über die Zeit integriert werden. Dies wird mithilfe eines analogen Integrators bewerkstelligt. Dieser setzt sich aus einem Operationsverstärker (Op-Amp), dem LMC6462 Op-Amp, und einem 10 $\mu$F Kondensator zusammen.\\\\
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.5\linewidth,keepaspectratio=true]{pics/analog_integrator.png}
+    \caption{Grundlegender Aufbau eines Op-Amp Integrators. \cite{aoe}}
+    \label{fig:analog_integrator}    
+\end{figure}
+Abb. \ref{fig:analog_integrator} zeigt den Aufbau eines Op-Amp Integrators. Der Eingangsstrom $\frac{V_{\text{in}}}{R}$ fließt durch den Kondensator $C$, und da der invertierende Eingang ein virtueller Nullpunkt ist, wird die Ausgangsspannung durch
+$$V_{\text{out}}(t) = - \frac{1}{RC} \int V_{\text{in}}(t) dt + \text{ const.}$$
+gegeben. Daraus folgt
+$$\Delta V_{\text{out}} = - \frac{V_{\text{in}}}{RC} \Delta t = - \frac{I_{\text{in}}}{C} \Delta t$$ \cite{aoe}
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.5\linewidth,keepaspectratio=true]{pics/coulomb_counter_output.png}
+    \caption{$X$ ist der Output des Integrators, $V_{CC}$ ist hier 3.3 V und $D$ ist der resultierende Duty-Cycle. \cite{aoe}}
+    \label{fig:coulomb_counter_output}    
+\end{figure}
+
+In Abb. \ref{fig:coulomb_counter_output} ist der Output des Integrators ($X$) zu sehen. Dieser wird mit einer festen Spannung (hier $\frac{V_{CC}}{2}$, was aber für die entgültige Rechnung unwichtig ist) verglichen und aus der Zeit die $X$ größer als die Vergleichsspannung ist, wird ein Duty-Cycle $D$ abgeleitet. Da solange keine negative Spannung anliegt das Integral immer weiter steigt (zumindestens bis zur Obergrenze $V^+$), muss, wie in Abb. \ref{fig:coulomb_counter} zu sehen, der Integrator regelmäßig ''entladen'' werden. Dies geschiet via einer ''Entladespannung'', die hier über den GPIO-Pin 13 angelegt wird. Da wie bereits erwähnt der Output proportional zu $I_{in}$ bzw. $\frac{I_{in}}{C}$ steigt und proportional zu der ''Entladespannung'' $\frac{V_{CC}}{R_{3}} - \frac{I_{in}}{C}$ fällt, kann daraus die Länge des Duty-Cycles ermittelt werden. Da in diesem Entwurf, wenn der GPIO-Pin13 auf GND gezogen ist, $R_3$ und $R_2$ in parallel zu einander geschalten sind, entspricht der Widerstand beim ''Laden'' $R_{cha} = \frac{R_2 R_3}{R_2 + R_3} = \frac{24k\Omega \cdot 24k\Omega}{24k\Omega + 24k\Omega} = 12k\Omega$.  Daraus folgt, dass der Duty-Cycle $D$ über längere Zeit
+$$D = \frac{I_{in} R_{3}}{C V_{CC}} \Rightarrow I_{in} = \frac{D \cdot C \cdot V_{CC}}{R_{3}}$$\cite{aoe}\\\\
+Somit repräsentiert $I_{in}$ den Strom der durch das System seit Messbeginn geflossen ist.\\\\
+Der LMC6462 Op-Amp wurde gewählt, da dieser einen kleinen Input Offset Voltage von nur 0.25 mV hat. Dies entspricht einem maximalen Offset Fehler von $e_{\text{off}} = \frac{V_{os}}{V_{in,max}} = \frac{250 \mu V}{2 V} = \frac{1}{8000}$ dies entspricht einem Messfehler von 25 mA ($2 A \cdot \frac{1}{8000} = 2.5 \times 10^-4$A) bzw. einer Auflösung von 8000:1. Und da dieser eine sehr niedrige Versorgung von nur 20$\mu$A / Amplifier benötigt.
+Ein weiterer Grund für den LMC6462 war sein Rail-to-Rail Output mit einem maximalen Offset von diesem von unter 10 mV, da dadurch bei einem $V^+$ von 3.3 V der Output des Integrators nie 3.4 V überschreitet und somit den ADC Pin, der bis zu 3.9 V messen kann, nie überlasten wird. \cite{LMC6462_data_sheet} Und es wurde eine 10 $\mu$ F Kondensator gewählt, da der Coulomb-Counter Output mit 10Hz abgetastet wird, ergibt sich dass mit $R_3 = 12k\Omega, f = 10Hz, C = 10 \mu F$, dass der Integrator nie mit mehr als $C \cdot f \cdot R_3 = 10 \mu F \cdot 10Hz \cdot 12000 \Omega = 1.2$ also $\frac{V_{CC}}{1.2}$ pro Taktzyklus steigt oder fällt. \cite{aoe}
+
+\paragraph{Probleme}
+\chapterauthor{Matthias Unterrainer}
+Das Hauptproblem mit dem Coulomb-Counter ist, dass zum einem der Input Rail-to-Rail ist, aber $V^- =$ GND und $V^+ = 3.3$ V ist. Dadurch kann generell keine negative Spannung, die beispielsweise beim Lade auftreten könnte, im Integral berücksichtigt werden, wodurch der Coulomb-Counter nur die Entladung richtig misst. Da aber das ganze Konzept von Coulomb-Counting darauf beruht, dass man genau darüber bescheid weiß, wie viel Ladung in den Akku rein- oder rausgeflossen ist, zerstört dies jeden Ansatz einer akuraten Messung.\\
+Dies ist zwar generell ein Problem, aber in diesem Aufbau vernachlässigbar, da der Coulomb-Counter so eingebaut wurde, dass die zu messenden Spannung $V_{in} < 1.65 V$ beim Laden und $V_{in} > 1.65 V$ beim Entladen beträgt. Dieser Aufbau führt allerdings zu deutlich erheblicheren Problemen, da erstens, dass Integral dadurch von den Werten her verschoben wird, was zwar noch nachträglich lösbar ist, aber das Hauptproblem ist der zweite Punkt, dass dadurch vor allem beim Laden sehr kleine Spannungen anliegen. Dies ist ein Problem, da wie oben bereits erwähnt, der Coulomb-Counter auf 2 A ausgelegt wurde unde deshalb extra ein Spannungsteiler eingebaut wurde, um die ''Startspannung'' niedrig zu halten, damit eine akurate Messung möglich ist. Wenn jedoch nur eine Spannung von 0.1 V anliegt, was einer relative hohe Ladespannung entsprechen würde, dann liegen Aufgrund des Spannungsteilers nur etwa 0.1 mV am Op-Amp an. Es folgt daraus, dass um die Vergleichsspannung von 1.65 V zu erreichen, mit $\Delta V_{\text{out}} = - \frac{V_{\text{in}}}{R_{chr}C} \Delta t \Rightarrow \Delta t = \frac{\Delta V_{out} \cdot R_{chr} \cdot C}{V_{in}} = \frac{1.65 V \cdot 12 k\Omega \cdot 10 \mu F}{0.1 mV} = 1980 s = 33 min$. Es würde also über eine halbe Stunde dauern, um nur eine Spitze des Duty-Cycles zu erreichen, was ein großes Problem ist, da das ganze Konzept auf vielen kleinen Messungen basiert, welche zwar einzeln gesehen teilweise größere Abweichungen haben, aber in der Summe ein relativ gutes Gesammtbild schaffen.
+
+\subsubsection{Realisierung}
+\chapterauthor{Lukas Eigenstetter}
+In diesem Kapitel wird die konkrete Realisierung der Schaltung beschrieben.
+Dabei werden die Probleme und angewendeten Techniken beschrieben.\\
+
+\paragraph{Haupt-ESP}
+\chapterauthor{Lukas Eigenstetter}
+Das Ladegerät und der Haupt-ESP sind auf einer 40 x 40 Put-Through Platine verlötet.
+Diese besitzt durchgezogene Leiterbahnen auf der Unterseite.
+Mithilfe eines Dremel-Schleifers wurden diese an bestimmten Stellen durchtrennt, um die gesamte Schaltung auf diesem Board unterzubringen.\\
+\autoref{schaltplanHaupt} zeigt den Schaltplan.
+Für Ein- und Ausgänge wurden jeweils PINs verlötet, die eine Verbindung mit Jumper-Kabeln erlauben.
+Aus Platzmangel mussten am tatsächlichen ESP auch Leitungen zwischen Controller und Platine verbaut werden.
+Diese sind in der Zeichnung direkt oberhalb des Controllers eingezeichnet.
+Widerstände, die in Reihe geschaltet sind, und Draht der zur Verlängerung der Verbindungen einiger Bauelemente benötigt wurde, sind oberhalb der Platine verbunden.
+Dies wurde durch Verdrillen und Verlöten gelöst.\\
+Zusätzlich befindet sich auf dieser Platine die Stromversorgung und der Buck-Converter.
+Um den Kapazität für das Filter des Abwärtswandlers zu realisieren, mussten sechs Kondensatoren parallel geschaltet werden.
+Auch hier wurde das Verfahren des Verdrillens und Verlötens angewendet.
+Um die Schaltung noch kompakter zu gestalten wurden die 1 \textOmega \ / 3 W Leistungswiderstände teilweise vertikal verbaut.
+
+\begin{figure}[htpb] % {H}
+    \begin{center}
+        \includegraphics[width=15cm,keepaspectratio=true]{pics/hauptespSchaltung_svg-raw.png}
+        \caption{Schaltplan des Hauptcontrollers}
+        \label{schaltplanHaupt}
+    \end{center}
+    Im Dokumentationsordner liegen ein SVG und die KiCad Datei zur besseren Lesbarkeit und Nachvollziehbarkeit bei.
+\end{figure}
+\clearpage
+
+
+\paragraph{Neben-ESP}
+\chapterauthor{Matthias Unterrainer}
+Der Neben-Esp wird nur verwendet um die Servos und das LCD Display zu steueren. Dazu werden die notwendigen Daten via UART vom Haupt-Esp an den Neben-Esp geschickt.
+\begin{figure}[htpb] % {H}
+    \begin{center}
+        \includegraphics[width=15cm,keepaspectratio=true]{pics/circuit_nebenesp.png}
+        \caption{Schaltplan des Nebenesps}
+        \label{curcit_nebenesp}
+    \end{center}
+    Im Dokumentationsordner liegen ein SVG und die KiCad Datei zur besseren Lesbarkeit und Nachvollziehbarkeit bei.
+\end{figure}
+
+\subsection{Datenverwaltung}
+\chapterauthor{Philipp Thaler}
+Das Projekt SunStorage hat verschiedene Systemzustände und muss auch historische Daten speichern können. Zudem kann auch die WLAN Konfiguration bearbeitet werden.
+Um diese Funktionen bereitzustellen ist es nötig, dass das System über eine Datenverwaltung verfügt.
+
+Die folgenden Kapitel geben einen detailierten Einblick, wie das System intern Daten speichert und verwendet.
+
+\input{spiffs.tex}
+
+\input{CSV-Historie.tex}
+
+\subsubsection{Systemzustand}\label{Systemzustand}
+\chapterauthor{Lukas Eigenstetter}
+Der Systemzustand beschreibt alle Werte, die zwischen Neustarts des Systems erhalten bleiben sollen, für die keine Historie benötigt wird.
+So können Konfigurationswerte aus dem Frontend erhalten bleiben.
+Weitere Zustandsinformationen umfassen zuletzt gelesene Sensorwerte oder Stellwerte der Servos.\\
+Der Zustand wird durch ein JSON-Objekt realisiert, das die Daten als Singleton hält und einen synchronisierten Austausch ermöglicht.
+Beim Systemstart wird versucht, die Datei \textbf{state.txt} auf der SD-Card zu lesen und als JSON zu parsen.
+Falls die Datei einige Werte nicht enthält oder fehlt, werden Defaultwerte verwendet.\\
+Im Betrieb wird der Zustand alle 5 Sekunden geschrieben.
+\autoref{tableStateCharger} zeigt alle Werte mit Bezug zum Ladegerät, die im finalen Zustandsobjekt enthalten sind.\\
+\begin{table}[H]
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            Name                  & Beschreibung                                           \\
+            \Xhline{3\arrayrulewidth}
+            usbMode               & Modus der USB-Schnittstelle (siehe \autoref{UsbModi})  \\
+            \hline
+            chargerMode           & Zustand des Ladegerätes (siehe \autoref{stmAkkulader}) \\
+            \hline
+            currentTarget         & Angestrebter Ladestrom                                 \\
+            \hline
+            thresholdVoltage      & Hysterese gegenüber Maximalspannung                    \\
+            \hline
+            maximumVoltage        & höchste Spannung, bis zu der geladen wird              \\
+            \hline
+            trickleThreshold      & Spannung, ab der der Ladevorgang verlangsamt wird      \\
+            \hline
+            batterySize           & Kapazität des Akkus in mAh                             \\
+            \hline
+            overheatedTemperature & Temperatur, bei der der Ladevorgang abgebrochen wird  \\
+            \hline
+            overheatedHysteresis  & Hysterese relativ zur overheatedTemperature              \\
+            \hline
+            highPowerEnabled      & High Power Circuit eingeschaltet                       \\
+            \hline
+        \end{tabular}
+        \caption{Zustandsattribute für Ladegerät}
+        \label{tableStateCharger}
+    \end{center}
+\end{table}
+Da der State außerdem als Kommunikationsschnittstelle zwischen lesenden und schreibenden Tasks dient, wird für jedes Objekt ein Getter und ein Setter definiert.
+So wird zusätzlich die JSON Struktur von der Verwendung im Programm abstrahiert werden.
+Um ein Reader-Writer-Problem zu verhindern, wird der Zugriff über eine Semaphore gesichert.\\
+Da erst spät erkannt wurde, dass ein zweiter Controller benötigt wird, wurde kein separates Protokoll für den Datenaustausch mehr definiert.
+Durch ein regelmäßiges Übertragen des Zustands wird der zweite Controller gesteuert.
+Eine saubere Lösung der Kommunikation wird in \autoref{KommunikationVerbesserung} beschrieben.
+
+\input{kommunikation.tex}
+
+\subsection{Module}
+\chapterauthor{Johannes Treske}
+Dieses Kapitel beschäftigt sich mit den im System verbauten Sensoren, Servos und dem verbauten Display.
+Des Weiteren wird Bezug auf die dazu geschriebenen Treiber genommen.
+
+\input{sensoren.tex}
+
+\subsubsection{DCF-77}
+\chapterauthor{Matthias Unterrainer}
+DCF-77 ist ein weit verbreiteter Langwellenzeitcode in Mitteleuropa. Er wird von der von der Physikalisch-Technischen Bundesanstalt (PTB) aus Frankfurt, Deutschland, betrieben. Der DCF-77 sendet ein Zeit- und Datensignal auf einer Frequenz von 77,5 Kilohertz, wobei jede Sekunde ein Bit übertragen wird, also insgesamt 60 Bit pro Minute, was einem Datensatz entspricht. \cite{dcf77_logs}
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=15cm,keepaspectratio=true]{pics/dcf77_minute.png}
+    \caption{Aufbau einer Minute. \cite{dcf77_logs}}
+    \label{fig:dcf77_minute}
+\end{figure}
+Wie in \autoref{fig:dcf77_minute} zu erkennen besteht ein Datensatz grob aus Wetterdaten und der aktuellen Zeit, die sich aus Datum und Uhrzeit zusammen setzt, und noch einigen weiteren Informationen über beispielsweise Sommer-/Winterzeit.
+Täglich werden dabei 480 Wetterdatensätze für 90 Regionen gesendet, wobei 60 Regionen eine Vier-Tage-Vorhersage und 30 Regionen eine Zwei-Tagen-Vorhersage erhalten. Die Übertragung der Wetterdaten beginnt täglich um 22 Uhr UTC mit Region 0. Für die ersten 60 Regionen werden für die ersten drei Tage sowohl die Höchst- als auch die Tiefstwert übertragen, während am 4. Tag nur noch der Höchstwert gesendet wird. Die freien Kapazitäten, die durch das Weglassen des Tiefstwerts am 4. Tag entstehen, werden genutzt, um für die restlichen 30 Regionen die Höchstwerte für die nächsten zwei Tage zu übermitteln. Ein ''Wetterbericht'' setzt sich dabei aus jeweils drei Einzelübertragungen zusammen. \cite{dcf77_wetter}
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=0.5\textwidth,keepaspectratio=true]{pics/dcf77_signal.png}
+    \caption{Vom DCF77-Reciever auslesbares Signal. \cite{dcf77_logs}}
+    \label{fig:dcf77_signal}
+\end{figure}
+In Abb. \ref{fig:dcf77_signal} ist das vom DCF-77 Reciever Modul ausgegebene Signal zu sehen. Wobei deutlich zu erkennen ist, dass zum Beginn einer Sekunde der Ausgang entweder für 100ms (bei einem 0-Bit) oder 200ms (bei einem 1-Bit) auf \textit{HIGH} gezogen wird und dann für die restliche Sekunde auf \textit{LOW} bleibt. Um dieses Signal ordnungsgemäß auslesen zu können, müsste es gemäß dem Abtasttheorem mit mindestens 20 Hz abgetastet werden, da das kürzeste Signal 100 ms lang ist, also mit einer Frequenz von 10 Hz läuft. Dies würde jedoch bedeuten, dass der DCF-77-Lesetask mindestens alle 50 ms oder sogar noch häufiger gestartet werden müsste, um sicherzustellen, dass das Signal korrekt erkannt wird. Um allerdings genutzt werden zu können, müsste dieser Task auf dem Haupt-ESP laufen, da ansonsten aufgrund der Tatsache, dass die Kommunikation vom Haupt-ESP zum Neben-ESP unidirektional ist, die vom DCF-77 gelieferten Daten größteils ungenutzt bleiben würden. Auf dem Haupt-ESP werden jedoch bereits einige andere wichtige Tasks ausgeführt und das ständige starten des DCF-77 Tasks hat zu erheblichen Problemen beim Scheduling geführt, da der DCF-77 Task für mindestens eine ganze Minute ein sauberes Signal erkennen muss, um eine genaue Messung zu ermöglichen. Dies hat verhindert, dass der DCF-77 Task kontinuierlich laufen kann. 
+Es wurde die Idee diskutiert, den Task nur zu bestimmten Uhrzeiten am Tag laufen zu lassen, um nur den ''Wetterbericht'' für die entsprechende Region vom DCF-77 zu erhalten, da die Uhrzeit sowieso viel genauer vom GPS empfangen wird, in Sekunden statt nur in Minuten wie beim DCF-77. Da allerings wie bereits erwähnt, ein einzelner ''Wetterbericht'' aus drei vollständigen Übertragungen besteht, die alle empfangen werden müssen, was mindestens drei Minuten in anspruch nehmen würde, und dabei den Haupt-ESP nahezu vollständig blockieren würden, wurde entschieden, den DCF-77 nicht einzubauen.
+
+\chapterauthor{Matthias Unterrainer}
+
+\subsubsection{LCD Display}
+\chapterauthor{Matthias Unterrainer}
+Das verwendete LCD Display hat eine Anzeige von 20 Zeichen über 4 Zeilen und kann sowohl im 8Bit Modus, als auch im 4Bit Modus betrieben werden.
+Es wird mit einer Spannung von 5V versorgt und schaltet sich automatisch nach 1 Minute aus, wenn keine Eingaben durch die Knöpfe erfolgen.
+Um Pins zu sparen, wird der 4 Bit Modus genutzt. Dabei werden beim Senden eines Zeichens zunächst die oberen 4 Bit und anschließend die unteren 4 Bit an das Display gesendet. Da jeder Sendevorgang etwa 200 $\mu$s dauert, verdoppelt sich dadurch die Übertragungszeiten. Da der Task über FreeRTOS nicht für derart kurze Zeitspannen inaktiv gesetzt werden kann, mussten diese durch eine Busy-Waiting-Implementierung umgesetzt werden.\\\\
+Zusätzlich bietet das LCD Display die Möglichkeit, den Hintergrundkontrast einzustellen. Hierzu wird eine Spannung zwischen 0V und $V_{\text{DD}}$ an den entsprechenden Pin angelegt. Diese Einstellung kann mithilfe des am Steuerbrett, zwischen den Knöpfen, angebrachten Potenziometer vorgenommen werden.\\
+Des Weiteren wird die Hintergrundbeleuchtung des Displays ebenfalls vom Neben-ESP gesteuert. Die Versorgungsspannung der Anode des LCD-Display-Moduls ist mit dem GPIO-Pin 13 verbunden, wodurch es zwischen 0V (ausgeschalten) und 3.3V (eingeschalten) umgeschaltet werden kann, und zusammen mit dem Display ein- oder ausgeschalten.
+
+\subsubsection{Knöpfe}
+\chapterauthor{Matthias Unterrainer}
+Die Knöpfe für das LCD Menu sind über \textit{HIGH} mit dem Neben-ESP verbunden. Für den linken Knopf musste zudem ein externer Pull-Up Widerstand eingebaut werden, da er über den GPIO-Pin 36 läuft, der keine internen Pull-Up/Pull-Down Widerstände hat. Die Knöpfe werden alle 200 $\mu$s abgefragt und können folgende 3 verschiedene Zustände einnehmen:\\
+\begin{tabular}{l|c|c}
+%\backslashbox{Aktion}{Gedrückte Buttons}    & Button0       & Button1   \\
+\hline
+NEXT                                        & \checkmark    &           \\
+PREV(ious)                                  &               & \checkmark\\
+CONF(irm)                                   & \checkmark    & \checkmark\\
+\end{tabular}\\
+\textit{NEXT} führ dabei zum Vorspringen zum nächste Element im Menü, während \textit{PREV} zum Zurückspringen dient. Ursprünglich wurde \textit{CONF} verwendet um den aktuell angezeigten Wert zu ändern. Nach dem Umzug auf den Neben-ESP war dies jedoch nicht mehr möglich. Nun reinitialisiert \textit{CONF} das LCD Display und lädt die Diplay Konfiguration, die über die Web-Gui eingestellt wird, neu.
+
+\subsection{Algorithmen}
+\chapterauthor{Matthias Unterrainer}
+
+\subsubsection{Ausrichtung der Panels}
+\input{ausrichtungPanels.tex}
+
+\subsubsection{Nachtabschaltung}
+\chapterauthor{Matthias Unterrainer}
+Um möglichst viel Energie zu sparen, wurde eine Nachtabschaltung implementiert. Diese führt dazu, das in er Zeit von einer Stunde nach dem Sonnenuntergang bis eine Stunde vor dem Sonnenaufgang, die Solarpanele in eine vorher über die Web-GUI festgelegte Position eingestellt werden, der Task zur ausrichtung der Panele blockiert und ein globales Event \textit{Nachtabschaltung} gesetzt wird, wodurch auch andere Task von der Nachtabschaltung informiert werden.
+
+% Die Berechnung für die Sonnenauf/untergangszeiten basieren auf diesem, ursprünglich vom Nautical Almanac Office veröffentlichen Algorithmus, \cite{nachabschaltung_algo}. Dieser benötigt lediglich den aktuellen Längen-/Breitengrad und das aktuelle Datum, Monat und Tag. 
+% Dazu wird zuerst vom Datum, also Monat und Tag, der aktuelle Tag des Jahres berechnet, d.h. der 1.1 ist Tag 1 und der 15.4 ist Tag 74. Dannach wird der Längengrad in Stunden umgerechnet und 
+
+\subsubsection{Akkuladegerät}\label{Akkuladegerät}
+\chapterauthor{Lukas Eigenstetter}
+Der Algorithmus des Akkuladegerätes kann durch die State Machine in \autoref{stmAkkulader} beschrieben werden.
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=\textwidth,keepaspectratio=true]{pics/chargerStm.png}
+    \caption{State Chart zum Ladealgorithmus}
+    \label{stmAkkulader}
+\end{figure}
+Der zentrale Zustand ist der Zustand \emph{CHARGING}.
+In diesem wird das PWM, dessen Schaltung in \autoref{akkuCircuit} beschrieben ist, angepasst.
+In allen anderen Zuständen ist der Duty Cycle 0.
+Das Ladegerät kann durch den Nutzer im Frontend gestartet oder gestoppt werden.
+Im Zustand \emph{CHARGING} wird zusätzlich der Temperatursensor geprüft.
+Falls die Temperatur über einem festgelegten Wert liegt, so wird der Zustand \emph{OVERHEATED} angenommen.
+Dies dient zum Schutz der Batterie vor zu hohen Temperaturen.  \autocite[S. 53]{chargerBuch}
+Falls die Batterie eine gewisse Spannung überschreitet, nimmt das Ladegerät den Zustand \emph{FULL} ein.
+So kann ein Laden bis zu einer gewissen Grenze ermöglicht werden.
+Im Zustand \emph{BALANCING} wird die vollere der beiden Zellen über einen Widerstand entladen.
+Eine detaillierte Beschreibung der Notwendigkeit dieses Verfahrens ist im \autoref{akkuCircuit} beschrieben.
+Um häufiges Wechseln zwischen den Zuständen zu vermeiden, sind jeweils Hysteresen definiert.\\
+Eine Abschaltung des Systems bei zu niedrigem Ladestand wurde nicht eingebaut, da dies eine relativ schwierige Aufgabe ist.
+Um zu messen, ob eine Spannung unterschritten wird, muss das System eingeschaltet sein.
+Sinnvoll wäre daher eine analoge Lösung.
+Diese könnte durch einen Transistor realisiert werden, der anhand eines Spannungsteilers gesteuert wird.
+Das Problem bei dieser Lösung ist, dass die Schaltung nicht im Betrieb konfiguriert werden könnte.
+Bei Betrieb mit NiMH Batterien würde dies dazu führen, dass der Ausschaltvorgang an einer falschen Stelle eintritt.\\
+
+Der Ladestrom wird über ein 13 Bit PWM Signal geregelt.
+Das Signal wird jeweils um die Differenz des zuletzt gemessenen Stromes in mA und dem derzeitigen PWM Wert angepasst:
+$$ PWM_{neu} = PWM_{alt} + (I_{Ziel} - I_{Charger}) \cdot PWM\_REGULATION\_FACTOR $$
+Der Wert Reglerkonstante $ PWM\_REGULATION\_FACTOR $ ist 1.\\
+Der Zielwert des Ladestroms kann durch den Nutzer mithilfe des Wertes \emph{currentTarget} vorgegeben werden.
+Dieser wird bis zum Spannungswert \emph{trickleThreshold} verwendet.
+Ab dem Spannungswert \emph{trickleThreshold} wird der Ladestrom $ I_{Ziel} $ linear verringert, bis er bei der \emph{maximumVoltage} auf 0 reduziert wurde.
+Abbildung \autoref{ladekurve} zeigt den daraus resultierenden Verlauf für die Standardwerte.
+\begin{figure}[htpb] % {H}
+    \begin{center}
+        \includegraphics[width=13cm,keepaspectratio=true]{pics/ladekurve.png}
+        \caption{Verlauf maximalen Ladestroms in Abhängigkeit der Zellenspannung}\label{ladekurve}
+    \end{center}
+    Die Darstellung zeigt den Verlauf für die Defaultwerte.
+    Die Spannung ist immer pro Zelle zu betrachten.
+\end{figure}
+
+Die Gerade im Trickle-Bereich wird durch die folgende Gleichung beschrieben:
+$$ I_{target} = I_{currentTarget} + I_{currentTarget} \cdot \frac{U_{trickleOffset}} {U_{trickleThreshold} - U_{maximumVoltage}} $$
+Die Werte  $ U_{maximumVoltage} $, $ I_{currentTarget} $ und $ U_{trickleThreshold} $ können durch den Nutzer vorgegeben werden.
+$ U_{trickleOffset} $ gibt an, an welcher Stelle des Trickle-Bereichs die Spannung gerade liegt.
+Sie wird durch die folgende Gleichung bestimmt:
+$$ U_{trickleOffset} = (U_{Battery} - U_{trickleThreshold} \cdot CELL\_COUNT) / CELL\_COUNT $$
+Die Anzahl der Akkuzellen, $ CELL\_COUNT $, ist 2.
+Professionelle Ladegeräte verwenden meist nicht-lineare Zielströme im Trickle-Bereich. \autocite[S. 50f]{chargerBuch}
+
+\subsubsection{Ladezustandsabschätzung}\label{Ladezustandsabschätzung}
+\chapterauthor{Lukas Eigenstetter}
+Akkus haben die Eigenschaft, dass sie mit abnehmendem Ladezustand an Spannung verlieren.
+Diesen Effekt kann man zur Abschätzung des Ladezustands (State of Charge Estimation) nutzen.
+Ein einfaches Verfahren der Ladezustandsabschätzung kann die zuletzt gemessene Spannung der Batterie verwenden.
+Da die Spannung der Zellen unter Last um bis zu 600 mV abnimmt, wird eine zusätzliche Metrik benötigt.\\
+Diese wird durch die Messungen des Coulomb-Counters umgesetzt.
+Durch ein- und abfließenden Strom kann auf die Veränderung des Ladezustands geschlussfolgert werden.
+Die Strommessungen bieten jedoch keine Einsicht in den absoluten Ladezustand.
+Daher wird ein hybrides Verfahren der Ladezustandsabschätzung umgesetzt, das beide Metriken verwendet:\\
+Alle zehn Minuten wird der spannungsbasierte Kalibrierungstask aufgerufen.
+In diesem werden High-Power-Circuit und Ladegerät ausgeschaltet, um einen möglichst geringen Strom im System zu haben.
+Dann wird eine Millisekunde gewartet und die ADC werden ausgelesen.
+Anhand eines separat bestimmten, nicht gemittelten Wertes der Batteriespannung wird durch einen Lookup in einer Wertetabelle der Ladezustand in Prozent bestimmt.
+\autoref{socTable} zeigt die hierfür verwendete Tabelle.\\
+\begin{figure}[htpb] % {H}
+    \centering
+    \includegraphics[width=13cm,keepaspectratio=true]{pics/socTable.jpg}
+    \caption{Verwendete Tabelle für die Ladezustandsabschätzung \cite{socTable}}
+    \label{socTable}
+\end{figure}
+Zu dieser wurde eine Umkehrfunktion bestimmt, um eine Abbildung von Spannung auf Ladezustandswerte zu erlauben.
+Die Tabelle hat 100 Werte und erstreckt sich über den Spannungsbereich von 8.4 V bis 7.4 V.
+Die Auflösung ist demnach teilweise höher als in der Tabelle.
+In diesen Fällen wurde linear interpoliert.
+Die Werte sind liegen im Programm als konstantes Array vor.
+Durch die folgende Formel wird der Ladezustand aus der Spannung bestimmt mithilfe eines einzigen Zugriffs bestimmt:
+$$ SoC = F_{SoC}((U_{Battery} - 7400) / 10) $$
+$F_{SoC}$ ist hierbei die Wertetabelle und $U_{Battery}$ die Batteriespannung in Millivolt.
+Im C-Code muss zusätzlich darauf geachtet werden, dass die Spannung im Bereich von 7.4 bis 8.4 V liegt.
+Der Task, der für das Auslesen der ADC verantwortlich ist, verändert den Wert des Ladezustands anhand des produzierten und verbrauchten Stroms gemäß der folgenden Formel:\\
+$$ SoC = SoC + \frac{Q_{CC} * 10}{K_{Bat}} $$ %TODO prüfen!!
+$ Q_{CC} $ ist die gemessene Ladung in Coulomb und $ K_{Bat} $ ist die Kapazität des Akkus in Milliamperestunden.
+
+In der Praxis ist der Stromverbrauch im Ruhezustand bereits hoch genug, um die Spannung der verwendeten Akkus signifikant zu verringern.
+Die Kalibrierung liefert deutlich zu niedrige Werte.
+Durch die Verwendung eines sparsameren Controllers für das Ladegerät und der Abschaltung aller Module könnte dieses Problem gelöst werden.\\
+Da jedoch noch Bugs in Coulomb-Counter-Anpassung existieren, ist der gemessene Ladezustand immer 0. \autocite[S. 139 - 158]{chargerBuch}
+\newpage
+\section{Verbesserungsmöglichkeiten}
+\chapterauthor{Lukas Eigenstetter}
+Dieses Kapitel befasst sich mit den Verbesserungsmöglichkeiten im Projekt.
+Die bei der Abnahme noch bestehenden Probleme der Teilkomponenten wurden bereits in den jeweiligen Unterkapiteln in \autoref{Dokumentation} beschreiben.
+Außerdem werden einige Alternativen aufgezeigt, die zu einem besseren Ergebnis geführt hätten.
+
+\subsection{Planung und Ablauf}
+\chapterauthor{Lukas Eigenstetter}
+Ein großes Problem in diesem Projekt war die Zeitplanung.
+Die Phase der Integration wurde unterschätzt und entsprechend zu spät begonnen.
+Bei der Zusammensetzung der Komponenten kamen viele Bugs zum Vorschein und neue Probleme traten auf.
+Diese hätten meist durch Unit Tests, Schnittstellentests und frühere Komponenten erkannt werden können.
+Außerdem wurde vergessen, die PINs für das SD-Card Modul zu vermerken, wodurch der Neben-ESP erst notwendig wurde.
+Diese Fehler und Versäumnisse spiegeln sich in der hohen Stundenzahl ab Woche 13 wider.
+
+% Lukas & Matthias
+% kabeldämpfung, smt circuit designen usw...
+
+\subsection{Mechanischer Aufbau}
+\chapterauthor{Philipp Thaler, Felix Wagner und Lukas Eigenstetter}
+Durch das Verwenden der dickeren Holzplatte für den Oberbau und die dünnere Holzplatte für den Unterbau ergiebt sich ein Balance Problem für den unteren Servomotor.
+Dieser benötigt daher mehr Kraft, um die Holzplatte zu rotieren. Daraus ist vermutlich der Verschleiß der Servohörner herzuleiten, der während der Testphase angefallen ist.
+Am Ende des Projekts wurde versucht, stabilere Servohebel zu verwenden.
+Ein Aluminiumhebel hat noch weniger ausgehalten als der Kunststoffhebel.
+\autoref{horn} zeigt ein selbst geschweißtes Horn aus einer Mutter und einer Metallplatte.
+Auch dieser Versuch ist fehlgeschlagen.
+
+\begin{figure}[htpb] % {H}
+	\begin{center}
+	\includegraphics[width=8cm,keepaspectratio=true]{pics/Fotos/servohorn.JPG}
+	\caption{Selbst geschweißter Servohebel (Lukas Eigenstetter)}
+	\label{horn}
+	\end{center}
+	Eine Mutter wurde an eine Metallplatte geschweißt und zugeschliffen.
+	Durch ein Einschlagen von Zähnen mithilfe eines Torx-Bit wurde versucht, einen festen Halt zu garantieren.
+\end{figure}
+
+Ein Federmechanismus hätte hier etwas Kraft nehmen können, um den Verschleiß geringer zu halten.
+
+Auch Linearlager für das Drehen der Solarplatten führt zu einer geringeren Belastung des oberen Servomotors.
+Es wird sich jedoch bewusst gegen den Einsatz entschieden, da die Reibung zwischen dem Holz Stabilität bei den jeweiligen Anschlagpunkten gewährleistet.
+Hier haben die Servomotoren am wenigsten Kraft um entgegenzuhalten.
+
+
+Die Servomotoren haben einige Probleme verursacht. 
+Die Anfangs gewählten Modelcraft ES-05 hatten durch ihre mangelhafte Dokumentation für großen Aufwand beim Suchen der korrekten Ansteuerung geführt.
+Jedoch erwiesen sich diese Motoren für den Aufbau als zu schwach. 
+Somit musste auf die L530MG ausgewichen werden, welche jedoch nur einen Aktionsbereich von 120° gegenüber den 180° der ES-05 bieten. \\
+Generell sollte ein anderer Typ von Servomotoren verwendet werden. Die aktuell genutzten Motoren schaffen keine wirkliche Drehung von 180°. Hier könnten Linearaktuatoren verwendet werden.
+
+Eine gute Alternative zu den Servomotoren wären Steppermotoren gewesen. 
+Diese hätten sich ebenfalls mit definierten Schritten mit ausreichender Genauigkeit positionieren lassen können.
+Die günstigste Option hätte womöglich eine Kombination aus Linearmotor für die Rotation und Servomotor für die Kippfunktion geboten. 
+Hierbei würde das Kippen der Solarpanele analog zum aktuellen Aufbau funktionieren. 
+Die Rotation würde über den nicht positionierbaren Linearmotor müsste über einen, auf der Rotationsplattform platzierten, Kompasssensor überwacht werden. 
+Dabei muss zusätzlich auch auf mögliche Kabelverdrehungen geachtet werden, da beliebig weite Drehungen möglich sind.
+\subsection{Sensoren}
+\chapterauthor{Johannes Treske}
+Die eingebauten Sensoren, vor allem der GPS Sensor, benötigen viel Strom.
+Wenn das SunStorage Produkt in Serie gehen würde, sollte man die Überlegung anstellen die verbauten Sensoren zu reduzieren.
+Eine Möglichkeit wäre es GPS Modul, Kompass und Beschleunigungssensor wegzulassen.
+Da Solaranlagen normalerweise für mehrere Jahrzehnte stationär an einem Ort installiert werden, ist es sinnvoll die GPS-Koordinaten einmal, z.B. über das Webinterface, manuell einzutragen.
+Der Kompass kann dadurch überflüssig gemacht werden, dass das komplette System beim Installieren vor Ort korrekt ausgerichtet wird.
+Der Beschleunigungssensor wird im SunStorage Projekt dafür verwendet, eine Schieflage des Systems auszugleichen.
+In einem realen Szenario ist dieser Ausgleich kaum relevant, solange die Schieflage nicht signifikant ist.
+Bei der Installation des Systems kann bereits darauf geachtet werden, dass das System möglichst gerade steht.
+Durch das Einsparen der Sensoren kann sowohl Strom als auch Geld gespart werden.
+
+%\subsection{Ein Unterkapitel, das sich der ganzen FreeRTOS und Espressif Kacke beschäftigt, die nicht funktioniert hat und wie man das evtl besser hätte lösen können}
+
+% interner temperatursensor: lukas
+\subsection{Sender-Empfänger Setup}\label{KommunikationVerbesserung}
+\chapterauthor{Lukas Eigenstetter}
+Der Aufbau mit zwei Controllern war anfangs nicht vorgesehen.
+Daher wurde eine möglichst unkomplizierte Lösung umgesetzt, die nicht sehr sauber ist.\\
+Eine saubere Lösung könnte aus einem kleinen Controller zur Ladesteuerung und für essenzielle Bestandteile und einem großen Controller für Frontend und Module bestehen.\\
+Ein ATmega328 hätte genug PINs und ADC, um das Ladesteuergerät zu realisieren.
+Dieser hat einen geringeren Stromverbrauch als der ESP-32.
+Ein ESP-32 dient dann als Interface für die Module und zum Hosting des Webservers.
+Der ATmega328 müsste dauerhaft eingeschaltet sein, während der ESP-32 nur periodisch zum speichern der Datenbank und zum Stellen der Servos benötigt wird.
+Der Systemzustand könnte dann im EEPROM des ATmega328 liegen.
+Das Starten des Webservers könnte dann über einen physischen Knopf erfolgen.
+Nach einem bestimmten Zeitraum ohne Aktion, könnte der Webserver heruntergefahren werden.\\
+Alle Bestandteile mit Ausnahme des ATmega328 würden dann über den Buck-Converter versorgt werden.
+Der kleine Controller kann durch Setzen des PINs am Buck-Converter die restlichen Bestandteile starten.
+Diese Lösung hätte einen deutlich geringeren Stromverbrauch als die ursprünglich geplante Ein-Controller Lösung.\\
+Sie verlangt, dass eine bidirektionale Kommunikation zwischen den beiden Controllern möglich ist.
+Dafür müsste ein Protokoll und Flusskontrolle umgesetzt werden.
+Da auch hier nur Zustandsnachrichten ausgetauscht werden müssen, die eine feste Größe besitzen, wäre eine implizite Flusskontrolle möglich.
+Es ist es nicht notwendig, den kompletten Zustand auszutauschen.
+Der zweite Controller muss nur die Einstellungen für das Ladegerät empfangen und die zu speichernden Daten senden.
+In einer sauberen Lösung würde der Systemzustand nur die Zustandsinformationen enthalten und nicht die Steuerungsinformationen für den zweiten Controller.
+Damit wären Haupt-Controller-Zustand, Lade-Controller-Zustand, Haupt-Controller-Nachrichten und Lade-Controller-Nachrichten getrennt.
+Im jetzigen Aufbau liegt alles in einer großen State-JSON.\\
+Ein weiteres Problem der Umsetzung ist, dass keine Fehlererkennung eingesetzt wird.
+Die fehlerfreie Übertragung der Zustandsnachricht könnte durch eine CRC oder eine Prüfsumme gesichert werden.\\
+Eine weitere Verbesserung wäre, das Ladegerät als SMT-PCB aufzubauen.
+Damit wären die Abweichungen die Verlustleistung geringer.
+Dies hätte schon sehr früh im Projektverlauf gemacht werden müssen, da die Lieferzeit eines PCB mehrere Wochen beträgt.
+Außerdem sind Korrekturen bei einem Fehler in der Schaltung nur schwer möglich.
+
+\subsection{Timing und Delays}
+\chapterauthor{Johannes Treske}
+Bei einer Weiterentwicklung des SunStorage Projektes, sollten die Delays der einzelnen Tasks weiter optimiert werden.
+Eine Überlegung wäre es, nicht mehr auf ein präventives Schedulingverfahren zu setzen, sondern den Tasks fest zugewiesene Rechenslots zuzuweisen, in denen sie genau einen Durchlauf vollführen.
+Dies ist möglich, da die Zeit, die ein Task braucht, um einem Durchlauf zu absolvieren, recht gut zu bestimmen ist und keine besonders zeitkritischen Tasks im Projekt vorhanden sind.
+Der Vorteil dabei ist es, dass der Task der gerade ausgeführt wird ohne Unterbrechung seine Aufgabe erledigen kann.
+Das bedeutet auch, dass sich Tasks nicht mehr um die Nutzung einer Ressource streiten müssten.
+
+%\subsection{DCF-77}
+% matthias: sehr wichtig!1!!elf11!!1
+
+%\subsection{Frontend}
+% evtl schiefe ebene in sim einbauen
+% anordnungen der displayelemente ermöglichen (Konzept, wie das im gui aussehen könnte)
+% weitere mögliche verschönerungen, falls dir noch welche einfallen: Valentin
+%Valentin: mehrere Aufrufe für lange Historien
+
+% bessere trennung der informationen, v.a. modulabschaltungen in extra file, state usw... Lukas, Philipp
+
+
+\newpage
+\pagenumbering{Roman}
+\listoffigures
+
+\newpage
+\listoftables
+
+\newpage
+\printbibliography
+
+Alle Links wurden am Abgabetag überprüft.
+
+\end{document}

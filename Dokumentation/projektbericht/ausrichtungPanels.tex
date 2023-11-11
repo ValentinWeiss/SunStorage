@@ -1,0 +1,136 @@
+\chapterauthor{Felix Wagner}
+Die Ausrichtung der Solarpanele erfolgt über die vom Haupt-ESP berechneten Azimut und Elevation Werte.
+Diese repräsentieren die Position der Sonne am Himmel. 
+Wenn davon ausgegangen wird, dass der SunStorage Aufbau stets auf einer ebenen Fläche liegt, dann können die Azimut- und Elevationwerte direkt auf die Postionen der Rotations- und Kippservos übertragen werden. 
+Somit würde sich eine direkte Ausrichtung zur Sonne ergeben und die Effektivität der Solarpanele wäre maximiert.
+Dieser Fall ist jedoch im praktischen Betrieb nicht immer gegeben.
+
+\subsubsection{Schieflage des Systems}
+Steht der Aufbau schief, so ist die Trennung der Aufgabengebiete des Rotieren und Kippens der Solarpanele nicht mehr gegeben.
+Somit können die Azimut und Elevation nicht mehr direkt für die Stellung der Servomotoren verwendet werden.
+Kippt man etwa den kompletten Aufbau auf eine Seite, so sind die Aufgaben der Motoren komplett umgekehrt.
+Für alle Orientierungen dazwischen übernehmen die Motoren Rotation und Kippen gemeinsam.
+
+\paragraph{Beschleunigungswerte}
+Um die Lage des SunStorage Systems zu ermitteln, muss die Erdbeschleunigung anhand von drei Achsen gemessen werden. 
+Dies erfolgt über die Daten des Beschleunigungssensors.
+
+\paragraph{Interpretation der Beschleunigungswerte}
+Betrachtet man die Beschleunigungswerte der drei Achsen als Vektor im 3-dimensionalen Raum, 
+so spannt dieser Vektor eine Ebene auf. 
+Dieser Vektor muss nun an der z-Achse im Koordinatensystem gespiegelt werden. 
+Damit lässt sich die physikalische Lage von SunStorage im Koordinatensystem abbilden.
+Dieser Vektor wird im weiteren Verlauf $ V_{SunStorage} $ genannt.
+
+\paragraph{Darstellen der Sonne im Koordinatensystem}
+Nachdem nun SunStorage im Koordinatensystem abgebildet ist, muss die gewünschte Sonnenposition mittels eines Vektors hinzugefügt werden.
+Wie bereits bekannt wird die Sonnenposition über die Werte Azimut und Elevation angegeben. 
+Dabei handelt es sich um Winkel. 
+Diese können mithilfe der trigonometrischen Funktionen in einem 3-dimensionalen Vektor übersetzt werden.
+Hierfür wird die Berechnung in vier verschiedene Fälle aufgeteilt, welche die vier Quadranten eines 2-dimensionalen Koordinatensystems darstellen. 
+\begin{itemize}
+    \item I Quadrant: $x = 1 y = \tan(Azimuth)$
+    \item II Quadrant: $x = -1 y = -\tan(Azimuth)$
+    \item III Quadrant: $x = -1 y = -\tan(Azimuth)$
+    \item IV Quadrant: $x = -\tan(Azimuth) y = -1$
+\end{itemize}
+Anschließend wird der Vektor aus dem Punkt (x,y) und dem Ursprung normalisiert, um mit dem später berechneten z-Wert die Sonnenposition darzustellen.\\
+Die z-Koordinate wird anschließend über den Tangens des Elevationwertes bestimmt. 
+
+$$ z = \tan(Elevation) $$
+
+Nun stellen x, y und z den Sonnenvektor $ V_{Sonne} $ dar.\\
+Ist der Elevationswinkel 90°, so wird $ V_{Sonne} $ auf (0,0,1) gesetzt, da in diesem Fall der Azimutwert vernachlässigbar ist.
+Nun kann die Sonnenposition im Koordinatensystem dargestellt werden.
+
+\paragraph{Solarpanele darstellen}
+Um die Orientierung der Solarpanele im Koordinatensystem darzustellen, wird eine Ebene konstruiert, welche die Panele senkrecht in ihrer Mitte trennt.
+Diese wird über die Berechnung des Orthogonalvektors der z-Achse und $ V_{SunStorage} $ bestimmt:
+\[
+\begin{pmatrix}
+    0\\
+    0\\
+    1\\
+\end{pmatrix}
+\times
+V_{SunStorage}
+=
+V_{ortho}
+\]
+Aus dem Vektor $ V_{ortho} $ lässt sich die Koordinatenform als Ebene erstellen.
+\[V_{ortho}x \cdot x + V_{ortho}y \cdot y + V_{ortho}z \cdot z = 0\] 
+Nun kann diese Ebene um die Achse von $ V_{SunStorage} $ rotiert werden.
+Dies wird über die allgemeine Drehmatrix umgesetzt.
+\[
+R_n(\alpha)
+=
+\begin{pmatrix}
+    n^2_1(1-\cos\alpha)+\cos\alpha & n_1n_2(1-\cos \alpha)-n_3\sin\alpha & n_1n_3(1-\cos\alpha)+n_2\sin\alpha\\
+    n_2n_1(1-\cos\alpha)+n_3\sin\alpha & n^2_2(1-\cos\alpha)+\cos\alpha & n_2n_3(1-\cos\alpha)-n_1\sin\alpha\\
+    n_3n_1(1-\cos\alpha)-n_2\sin\alpha & n_3n_2(1-\cos\alpha)+n_1\sin\alpha & n^2_3(1-\cos\alpha)+\cos\alpha\\
+\end{pmatrix}    
+\]
+An Stelle von $ n = (n_1, n_2, n_3)^T $ wird $ V_{SunStorage}^T $ eingesetzt.
+Dies entspricht der Bewegung des Rotationsservomotors.
+Anschließend kann die Rotation der Ebene gesucht werden, für die $ V_{Sonne} $ eingesetzt
+in  die Koordinatenform der Ebene des Normalenvektors $ V_{ortho} $ den geringsten Wert hat. %TODO der satz doof
+Damit ist die Bestimmung der Stellung des Rotationsmotors beendet, da dies bedeutet, 
+dass $ V_{Sonne} $ in der Ebene von  $ V_{ortho} $ liegt.
+Anschließend erfolgt die Berechnung der Stellung des Kippmotors.
+Dafür wird ein weiterer Orthogonalvektor $ V_{opt} $ erzeugt. 
+Dieser liegt zwischen der z-Achse und $ V_{ortho} $. 
+Die Stellung des Kippmotors kann somit durch die Berechnung des Winkels zwischen $ V_{opt} $ und $ V_{Sonne} $ bestimmt werden:
+\[\alpha = \arccos(\frac{V_{opt} \cdot V_{Sonne}}{\left| V_{opt} \right| \cdot \left| V_{Sonne} \right|})\]
+
+\subsubsection{Schieflage des Kompass}
+Der Kompass liefert in Abhängigkeit seiner Ausrichtung unterschiedliche Werte.
+In diesem Kapitel wird die notwendige Korrektur beschrieben.
+\paragraph{Nordausrichtung}
+\chapterauthor{Felix Wagner}
+Die Bestimmung der Orientierung zu Norden erfolgt über die Winkelberechnung zwischen der 
+y-Achse und der Geraden des Koordinatenursprungs und des aktuellen (x, y)-Messpunkts. 
+Dieser Winkel wird mittels der Tangensfunktion ermittelt. Siehe Abbildung \autoref{fig:circlecenter}.
+Die C Standardbibiliothek $math.h$ liefert hierfür die Funktion $atan2f$, 
+welche den Winkel als float Datentyp zurückgibt 
+und die vier verschiedenen Quadranten des Koordinatensystems berücksichtigt.
+
+\paragraph{Schieflagenkorrektur}
+\chapterauthor{Felix Wagner}
+Es ist nicht immer gegeben, dass der Kompass perfekt gerade liegt. 
+Deshalb müssen die Sensorwerte unter Berücksichtigung des vom Beschleunigungssensor 
+gestelltem Orientierungsvektor angepasst werden. 
+Dies erfolgt über die sogenannte Vektorprojektion. 
+Dabei wird über folgende Formel \[\vec{a_{projected}} = \frac{\vec{a} \circ \vec{b}}{\vec{b} \circ \vec{b}} \cdot \vec{b} \]
+der Vektor aus den Kompasswerten auf die Orientierung des Vektors der Beschleunigungswerte projeziert. 
+Anschließend werden die x- und y-Werte des projezierten Vektors von denen des Kompassvektors subtrahiert. 
+Somit sind die Kompasswerte bereit für die oben besprochene Weiterverarbeitung.
+
+\subsubsection{Verbesserter Algorithmus}
+Der implementierte Algorithmus nutzt für seine Berechnung viele Multiplikationen und trigonometrische Funktionen.
+Dies erzeugt einen großen Rechenaufwand und ist im Dauerbetrieb nicht optimal.
+Dies wirkt sich aufgrund der großen zeitlichen Abstände der Funktionsaufrufe kaum negativ auf die Funktionsweise von SunStorage aus.
+Im Folgenden wird eine effizientere Formel erklärt.\\
+Die Berechnung von $ V_{SunStorage} $  und $ V_{Sonne} $ erfolgt analog zum ursprünglichen Algorithmus.
+Anstatt einer Ebene für die Solarpanele eine Ebene über den Vektor $ V_{SunStorage} $ in Koordinatenform erzeugt.
+\[V_{SunStorage}x \cdot x + V_{SunStorage}y \cdot y + V_{SunStorage}z \cdot z = 0\] 
+Anschließend wird die Spitze von $ V_{Sonne} $ als Ausgangspunkt für eine Gerade $ G_{Sonne} $ mit dem Richtungsvektor $ V_{SunStorage} $ generiert.
+Der Schnittpunkt von $ G_{Sonne} $ mit der Ebene von SunStorage stellt mit dem Ursprung des Koordinatensystems den Vektor $ V_{opt} $ dar.
+Aus $ V_{opt} $ kann wiederum die Stellung für Rotation und Kippen der Motoren analog zum vorherigen Ansatz berechnet werden.
+
+\subsubsection{Bestimmung der Abweichung zum Norden}
+\chapterauthor{Felix Wagner}
+Die Bestimmung der Orientierung zu Norden erfolgt über die Winkelberechnung zwischen der 
+y-Achse, der Geraden des Koordinatenursprungs und des aktuellen (x, y)-Messpunkts. 
+Dieser Winkel wird mittels der Tangensfunktion ermittelt. (siehe \autoref{fig:circlecenter})
+Die C Standardbibliothek $math.h$ liefert hierfür die Funktion $atan2f$, 
+welche den Winkel als float Datentyp zurückgibt und dabei die vier verschiedenen Quadranten des Koordinatensystems berücksichtigt.
+
+\paragraph{Schieflagenkorrektur}
+Es ist nicht immer gegeben, dass der Kompass perfekt gerade liegt. 
+Deshalb müssen die Sensorwerte unter Berücksichtigung des Orientierungsvektors, die der Beschleunigungssensor liefert, angepasst werden. 
+Dies erfolgt über eine Vektorprojektion.
+Mithilfe der folgenden Formel wird der Vektor aus den Kompasswerten auf die Orientierung des Vektors der Beschleunigungswerte projiziert.
+\[\vec{a_{projected}} = \frac{\vec{a} \circ \vec{b}}{\vec{b} \circ \vec{b}} \cdot \vec{b} \]
+ 
+Anschließend werden die x- und y-Werte des projizierten Vektors von den Werten des Kompassvektors subtrahiert. 
+Somit sind die Kompasswerte bereit für die in Weiterverarbeitung. \autocite{compasstilt}

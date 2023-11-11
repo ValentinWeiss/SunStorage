@@ -1,0 +1,4 @@
+{
+	"ssid":	"OnePlus Nord",
+	"password":	"00000001"
+}

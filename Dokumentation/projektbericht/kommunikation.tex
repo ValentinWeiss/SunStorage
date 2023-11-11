@@ -1,0 +1,160 @@
+\subsection{Kommunikation}
+\chapterauthor{Philipp Thaler}
+Um es dem Benutzer zu ermöglichen mit dem System zu interagieren, benötigt das System funktionale Schnittstellen, um mit der außenwelt zu kommunizieren.
+
+Außerdem wird ein Kommunikationsweg zwischen den beiden ESP32 Boards, die zur Steuerung des Systems verwendet werden, benötigt.
+Die folgenden Kapitel geben einen Einblick wie das System intern und nach außen kommuniziert.
+%Philipp
+
+\subsubsection{SD-Karten Modul}
+\chapterauthor{Philipp Thaler}
+Mit Hilfe des SD-Karten Moduls von AZ-Delivery kann das System auf eine SD-Karte zugreifen und auf dieser Dateien ablegen, lesen oder auch löschen.
+ESP-IDF bietet zwei grundsätzliche Wege wie ein SD-Karten Modul eingebunden werden kann, wie den SDMMC Treiber und den SD SPI Treiber. Da das Modul von AZ-Delivery via SPI angesteuert werden muss, wird für die Einbindung in das System der SD SPI Treiber verwendet.
+
+Um den Treiber zu initialisieren, wird zunächst eine Konfiguration angelegt. Diese beinhaltet die maximale Dateianzahl, die aktuell auf fünf gestellt ist und ob die SD-Karte bei gescheitertem Mountversuch formatiert werden soll oder nicht.
+Da keine Formatierung erfolgen soll, ist diese Funktion deaktiviert.
+
+Der Bus, über den kommuniziert wird, muss ebenfalls initialisiert werden. Hier werden die PINs in der Konfiguration gesetzt mit denen das SD-Karten Modul an das ESP32 angeschlossen ist.
+Anschließend wird der SPI Bus mit der erstellten Konfiguration initialisiert. Wichtig ist anzumerken, dass der Pullup Widerstand am ESP32 Port, an dem der CS PIN des SD-Karten Moduls angesteckt ist, eingeschalten wird. Sonst ist ein mounten des Dateisystems nicht möglich.
+Wenn diese Einstellungen ohne Fehler ausgeführt werden, wird das Dateisystem von der SD-Karte auf das in der global definierten \glqq SDC\_MOUNT\_POINT\grqq{} Variable gemountet und ist somit für das gesamte System verfügbar.
+
+Um Dateien lesen oder schreiben zu können, werden die Befehle \glqq fopen()\grqq{}, \glqq fprintf()\grqq{} und \glqq fclose()\grqq{} verwendet. Diese ermöglichen das öffnen und beschreiben der gewünschten Dateien. Hierfür stellt der \glqq sdCardService\grqq{} eine extra Funktion \glqq sdCardWriteFile()\grqq{} bereit.
+Der Funktion kann der gesamte Pfad einer Datei und der Inhalt übergeben werden. Das Beschreiben und Speichern der Datei übernimmt die Funktion selbst.
+
+Die SD-Karte stellt ein wichtiges Glied im Projekt dar, da dort sowohl die Datenbank als auch der Systemstatus regelmäßig Dateien ablegen oder aktualisieren.
+
+%Philipp
+
+\subsubsection{Wi-Fi}
+\chapterauthor{Philipp Thaler}
+Eine Schnittstelle nach außen bietet der bereits verbaute WLAN Chip auf dem ESP32 Board. Das ESP-IDF Framework stellt drei Modi zur Verfügung in denen das WLAN Modul betrieben werden kann.
+
+Das System startet und überprüft zunächst ob eine \glqq wifi.txt\grqq{} auf der SD-Karte vorhanden ist. Ist diese vorhanden, wird das JSON der Datei ausgelesen und die SSID und das Passwort gelesen.
+Diese beiden Werte werden verwendet, damit sich das ESP32 mit der SSID verbindet. Das Board ist dann im Station Modus (STA).
+
+Ist keine \glqq wifi.txt\grqq{} vorhanden oder sind die Einträge in der Datei fehlerhaft, startet das System im Access Point Station Modus (APSTA). Dieser Modus ist eine Mischung aus Access Point und Station Modus.
+Es bietet dem ESP32 die Möglichkeit nach verfügbaren WLAN Netzwerken zu scannen, aber gleichzeitig ein eigenes WLAN Netzwerk zu erstellen und Verbindungen entgegenzunehmen.
+
+Der APSTA Modus ist der Fallback Modus. In dieser Einstellung können sich bis zu fünf Geräte mit dem SunStorage WLAN verbinden. Die SSID ist auf \glqq SunStorage\grqq{} eingestellt und das Passwort \glqq sunstorage123\grqq{} wird standardmäßig verwendet.
+Diese Einstellung ist nur zum initialisieren und nicht als Dauerbetrieb gedacht. Nachdem sich der Benutzer verbunden hat kann sich Dieser über die Weboberfläche, die mit der IP-Adresse 192.168.1.1 angesprochen wird, mit dem System verbinden und das SunStorage und die WLAN Konfiguration bearbeiten.
+
+Die Standardwerte sind im Quellcode hinterlegt. Somit kann im Notfall immer auf das System zugeriffen werden, da sich das System nach spätestens fünf Verbindungsabbrüchen automatsich in den APSTA Modus versetzt.
+
+Ist das System hingegen erfolgreich mit dem Heimnetz verbunden, lässt es sich via selbsteigestelltem DNS oder IP-Adresse, die dem Gerät vom Heimnetz-DHCP zugewiesen wird, erreichen.
+%Philipp
+
+\subsubsection{HTTP Server}
+\chapterauthor{Philipp Thaler}
+Der HTTP-Server ist für das Ausliefern der Webseite Dateien zuständig und liefert auch über definierte URL Aufrufe Daten an das Frontend. Zunächst wird der HTTP-Server mit Standardkonfigurationsparametern erstellt.
+Diese werden erweitert, damit bis zu 20 HTTP-Handler verwendet werden können. Danach wird der HTTP Server initialisiert und gestartet. Wenn der Dienst startet, werden die insgesamt neun HTTP Handler einzeln geladen.
+
+Der HTTP-Server ist generell über die Standard-URL \glqq /api/v1/\grqq{} für API Aufrufe erreichbar. Um auf spezifische Funktionen zuzugreifen, erweitert das Frontend die URL und erstellt dafür eine HTTP-Anfrage.
+Am Server wird diese Anfrage verarbeitet und die entsprechenden internen Funktionen aufgerufen. Nach dem erfolgreichen Sammeln der Informationen für die Anfrage, erstellt der Server ein JSON-Objekt und sendet diese zurück an das Frontend.
+
+Der HTTP-Service muss nicht wie andere Funktionen in einen extra Task geschrieben werden, da FreeRTOS diese Funktionalität bereits mit dem Initialisieren bietet.
+Generell sendet der HTTP-Server bei auftretenden Fehlern ein HTTP-Statuscode 500 \glqq Internal Server Error\grqq{}. Bei erfolgreicher Ausführung wird der HTTP-Statuscode 200 \glqq OK\grqq{} verschickt.
+
+Nachfolgend wird auf die neun HTTP-Handler eingegangen und deren Funktionsweise erklärt:
+
+\subparagraph{shutdownHandler} Der erste HTTP-Handler hat laut Spezifikation die Aufgabe, einzelne Bausteine wie das DCF77 Modul, das GPS Modul, die HTTP Funktionalität oder das WiFi für eine vom Nutzer gewählte Zeit abzuschalten.
+Dafür sendet das Frontend eine HTTP-POST-Anfrage auf die URL \glqq /api/v1/shutdown\grqq{}.
+
+Im Body wird angegeben welche Module ausgeschaltet werden. Der Handler prüft nun, welchen der Services er für wie viele Sekunden abschalten muss.
+Dazu wird der als JSON-String übergebene Body in ein cJSON Objekt umgewandelt um daraus die nötigen Werte extrahiert.
+
+Danach werden die entsprechenden \glqq Stop-Tasks\grqq{} erstellt, die vom FreeRTOS ausgeführt werden.
+Diese Tasks schalten die einzelnen Module aus und nach den angegebenen Sekunden wieder ein. Nach Erstellung der Tasks, wird dem Client eine Antwort gesendet. Diese enthält den HTTP Statuscode 200.
+
+Somit weiß der Client, dass die Anfrage richtig bearbeitet wird.
+Sollten während dem Erstellen oder Abschalten der Module Fehler auftreten, wird eine Fehlermeldung an das Frontend übergeben.
+
+\subparagraph{systemStatus-Handler} Die Systeminformation URL \glqq /api/v1/system\grqq{} wird über eine GET-Anfrage vom Client aufgerufen.
+Der Handler gibt generelle Informationen über das verwendete ESP32 zurück.
+Der Handler fügt alle Informationen, die über globale Variablen vom FreeRTOS zur Verfügung gestellt werden, in ein JSON Objekt zusammen und übergiebt dieses an das Frontend.
+
+Das JSON Objekt beinhaltet die Versionsnummer des Boards, die Anzahl der CPU-Kerne, das Modell, die Features die das ESP besitzt, den freien und belegten Heap-Speicher und die MAC-Adresse.
+
+\subparagraph{wifiAPListHandler} Dem Nutzer wird eine Liste aller verfügbaren SSIDs in der Umgebung angezeigt. Dafür ist der \glqq wifiAPListHandler\grqq{} zuständig. Dieser wird mit einer HTTP-GET Anfrage auf die URL \glqq /api/v1/wifi/list\grqq{} aufgerufen.
+Diese Funktion ruft die \glqq wifiScan\grqq{} Methode auf. Sie befindet sich in der \glqq wifiService.c\grqq{} Datei. Das Framework FreeRTOS bietet eine Funktion, die es ermöglicht alle SSIDs zu ermitteln, mit der sich das ESP verbinden kann.
+
+Nach erfolgreicher Ausführung dieser Funktion wird für jeden gefundenen Access Point, dessen Informationen in ein JSON Objekt geschrieben. Dieses JSON Objekt wird dann an ein zuvor erstelltes übergeordnetes JSON Objekt angehängt.
+Nun befinden sich alle Informationen in einem großen Objekt, welches nun an den Client gesendet werden kann.
+
+\subparagraph{wifiConfigureHandler} Nachdem der Nutzer bereits eine Anzeige von verfügbaren Zugangspunkten hat, ist der Nutzer in der Lage, das ESP32 damit zu verbinden.
+Diese Funktionalität bietet der \glqq wifiConfigureHandler\grqq{}. Der Client kann mittels einer HTTP-POST Anfrage auf die URL \glqq /api/v1/wifi/configure\grqq{} dem System mitteilen, mit welcher SSID und mit welchem Passwort sich verbunden werden soll.
+
+Aus dem übermittelten HTTP-Body extrahiert der Handler die SSID und das Passwort.
+Die beiden Werte werden in die \glqq wifi.txt\grqq{} Datei geschrieben, um danach das Wi-Fi Modul neu zu initialisieren.
+
+Deswegen wird die \glqq initWifi\grqq{} Methode angepasst, damit diese auch eine Neuinitialisierung während des Systembetriebs durchführen kann.
+
+Sie liest die entweder neu geschriebene oder aktualisierte \glqq wifi.txt\grqq{} Datei ein und versucht eine Verbindung mit der dort hinterlegten SSID aufzubauen.
+Sollten während des Vorgangs Fehler entstehen, wird die Neuinitialisierung des WLAN Moduls abgebrochen und der Client bekommt eine Fehlermeldung als Antwort.
+
+Wenn der Handler die Konfiguration ohne Fehler durchführt, muss sich der Benutzer erst wieder mit dem richtigen WLAN verbinden, um eine Kommunikation mit dem ESP herzustellen, da dieses nun mit einem anderen WLAN Access Point verbunden ist.
+
+\subparagraph{stateSetterHandler} Um dem Benutzer Einsicht in das System zu geben und welche internen Werte das SunStorage gerade verarbeitet, bietet der HTTP-Server einen Endpunkt für GET Anfragen unter der URL \glqq /api/v1/state\grqq{} an.
+
+Hier kann das Frontend alle aktuellen Systemvariablen abholen. Dazu klont der HTTP-Handler den aktuellen Systemstatus. Dieser Status wird von einem JSON Objekt in einen String umgewandelt und an das Frontend gesendet.
+
+Diese URL erweist sich als hilfreiche Debugging-Möglichkeit, da es sonst nicht möglich ist den aktuellen Systemzustand einzusehen.
+
+\subparagraph{stateGetterHandler} Es ist möglich den Systemzustand für gewisse Bereiche anzupassen. Deswegen bietet der HTTP-Server unter der gleichen URL wie beim Auslesen des Systemstatus diese Funktionalität an. Nur muss hierfür die HTTP-POST-Methode verwendet werden.
+Über die Schaltflächen auf der Webseite ist es dem Benutzer möglich, die Werte auf die eigenen Bedürfnisse anzupassen. Sobald das Frontend die Anfrage absendet, liest der \glqq stateSetterHandler\grqq{} den übergebenen JSON-String aus und wandelt diesen wieder in ein JSON Objekt um.
+
+Nun wird für jeden änderbaren Wert geprüft, ob dieser im HTTP-Body enthalten ist. Wird dieser Wert nicht gesendet, erfolgt auch kein setzten im Systemstattus.
+Ist ein veränderbarer Wert als JSON-Key gesetzt, wird der zugehörige JSON-Value ausgelesen und die entsprechende Setter-Funktion im Systemstatus aufgerufen.
+
+Nach erfolgreicher Verarbeitung, sendet der Server den HTTP-Statuscode 200.
+
+\subparagraph{databaseGetHandler} Die historischen Daten für das Frontend stellt die Funktion databaseGetHandler unter der URL \glqq /api/v1/database\grqq{} mit der HTTP-POST Methode zur Verfügung. Es wird absichtlich die POST-Methode verwendet, da der Client einen Start- und Endzeitpunkt an den Server übergeben muss um nicht zu viele Daten aus der Datenbank zu filtern.
+
+Filtert der Client zu viele Daten aus der Datenbank, kommt es zu einer sehr großen Last auf dem Microkontroller. Der Client kann auch angeben, welche Daten er aus der Datenbank extrahieren möchte.
+
+Dies geschieht mit simplen TRUE/FALSE Werten für die zu extrahierenden Werte. Das genaue Vorgehen wird in \autoref{csvhistory} erläutert. Nachdem die Datenbank das JSON-Objekt erstellt hat, kann der HTTP-Server diese in einen String konvertieren und an den Client senden.
+
+\subparagraph{recalibrateBatteryHandler} Die Batterie Rekalibrierungsfunktion ist unter der URL \glqq /api/v1/battery/calibrate\grqq{} mit der HTTP-GET Methode erreichbar. Der \glqq recalibrateBatteryHandler\grqq{} ruft die bereitgestellte Rekalibrierungsfunktion des Chargers auf.
+Dem Client wird nach der Ausführung eine HTTP-Status Meldung mit Code 200 gesendet. Die Anfrage ist somit erfolgreich.
+
+\subparagraph{commonGetHandler} Um die statischen Dateien der Webseite an den Client ausliefern zu können, benötigt der HTTP-Server noch eine default URL. Diese ist wie folgt angegeben \glqq /*\grqq{}. Sollte keiner der oben genannten Handler mit der URL ausgelöst werden, übernimmt der \glqq commonGetHandler\grqq{} alle HTTP-GET Anfragen.
+Dieser ist so konzipiert, dass ein Aufruf auf die Root-URL immer die index.html Datei ausliefert. Für alle anderen URL Pfade versucht der Server die entsprechende Datei im SPIFFS zu finden und auszuliefern.
+
+Soll nun die index.html ausgeliefert werden, so überprüft der Server zunächst ob die Datei auslieferbar ist. Hier prüft der Server auf bestimmte Dateiendungen, wie zum Beispiel .html, .png oder .css. Sollte die Datei nicht in der Liste stehen, liefert der Server eine Fehlermeldung an den Client.
+
+Danach prüft das System, ob die Datei auch im Dateisystem existiert. Auch hier gibt der Server eine Fehlermeldung, sollte die Datei nicht vorhanden sein. Der Server setzt den Dateityp im HTTP-Protokoll-Header, da der Browser am Client wissen muss welchen Dateityp er empfängt.
+
+Beim Erstellen des SPI-Dateisystems ist aufgefallen, dass die Artefakte der Webseite größer als die 4MB Flashspeicher sind. Deswegen werden die Frontend Dateien mit dem Programm \glqq gzip\grqq{} komprimiert.
+
+Für die vorher komprimierten Java-Script Dateien muss der Server das HTML-Header-Flag \glqq gzipEncoding\grqq{} setzen. Nur damit ist der Browser in der Lage, die Dateien nach dem Empfangen zu entpacken und dem Nutzter darzustellen.
+
+Da nun alle notwendigen HTTP-Header gesetzt sind, liest der Server die Datei in einen Buffer ein und überträgt diesen mit der vom Framework bereitgestellten Funktion zur Übertragung von Buffern.
+
+So kann eine große Datei in kleinen Stücken eingelesen und gesendet werden, ohne den Arbeitsspeicher und den Prozessor des Mikrokontrollers zu sehr zu belasten.
+Ist die Datei vollständig übertragen wird, dem Browser ein leerer Inhalt gesendet um ihm zu signalisieren, dass die Dateiübertragung abgeschlossen ist.
+%Philipp
+
+\subsubsection{Sender-Empfänger Setup}
+\chapterauthor{Philipp Thaler und Johannes Treske}
+
+Das Zusammenbringen und Integrieren der einzelnen Module hat gezeigt, dass die physischen Ports des ESP32 nicht ausreichen um alle Sensoren und Aktoren zu verbinden.
+Deswegen musste eine Ausweichlösung gefunden werden.
+Diese Lösung ist ein zweiter ESP32, der Daten vom Controller ESP empfängt und mit diesen Daten arbeitet.
+Die Steuerung des gesamten Systems erfolgt nun nicht mehr über einen ESP, sondern über ein Verbund aus Controller ESP und peripherem ESP.
+Dadurch ist es möglich, dass die Motorsteuerung und das Display von dem peripheren ESP gesteuert werden.
+
+Die Kommunikation zwischen den beiden Mikrocontrollern wird mit dem UART Protokoll realisiert. Hierzu werden jeweils zwei Ports für das Senden und Empfangen auf den beiden Boards definiert.
+
+Der Controller ESP soll nur in bestimmten Zeitintervallen den aktuellen Systemzustand an den periphere ESP senden, um die CPU Auslastung zu minimieren.
+Deswegen ist der Sendevorgang in den Task eingebaut, der den Systemzustand in gleichmäßigen Intervallen auf die SD-Karte schreibt.
+Außerdem wird der Systemzustand nur dann gesendet, wenn auch eine Veränderung stattgefunden hat.
+Dies ist nur möglich, da der zweite ESP keine zeitkritischen Berechnungen ausführt.
+
+Der Sender klont das JSON Objekt des Systemzustandes zur Übertragung.
+Danach wird das JSON Objekt in eine Zeichenkette ohne Zeilenumbrüche umgewandelt und dessen Länge bestimmt.
+Anschließend wird die Zeichenkette unter Angabe der Länge mithilfe der UART Sendefunktion des ESP-IDF Frameworks gesendet.
+Da der Sendevorgang in dem Task zum persistenten Speichern des Systemzustandes aufgerufen wird, muss kein extra Sendetask erstellt werden.
+
+Der Empfänger hingegen führt in kurzen Zeitintervallen den UART Empfangstask aus. Hier ist es notwendig einen eigenen Task anzulegen damit das Empfangen immer wieder neu planmäßig ausgeführt werden kann.
+Nachdem die Funktion die Länge der Daten ermittelt hat, liest die Empfangsfunktion die Zeichenkette in den Buffer des Empfängers. Sobald ein \glqq \textbackslash n\grqq{} in der übertragenen Zeichenkette erkannt wird, weiß der Empfänger, dass die Übertragung komplett ist.
+Nun wird die Zeichenkette mithilfe der cJOSN-Bibliothek in ein JSON-Objekt umgewandelt und der Systemstatus anhand des erstellen Objektes gesetzt.
+Der periphere ESP32 ist dann in der Lage, die Motoren und das Display mit den nötigen Informationen aus dem Systemstatus anzusteuern.

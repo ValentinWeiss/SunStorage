@@ -1,0 +1,77 @@
+\vspace{1em}
+\begin{table}[!hp]
+    \begin{center}
+        \begin{tabular}{|p{0.8cm}|p{6cm}|p{0.8cm}|p{8cm}|} \hline
+            \textbf{Typ} & \textbf{Aufgabe}                          & \textbf{Std.} & \textbf{Bemerkung}                                              \\ \hline
+            \multicolumn{4}{|l|}{Woche 1}                                                                                                              \\ \hline
+            S            & Materialliste und Bestellliste anfertigen & 3             & -                                                               \\
+            S            & Gantt Diagramm erstellen                  & 4             & -                                                               \\
+            I            & WLAN Setup Implementierung                & 3             & Noch mit Arduino Framework geschrieben, musste verworfen werden \\ \hline
+            \multicolumn{4}{|l|}{Woche 2}                                                                                                              \\ \hline
+            S            & Materialliste und Bestellliste anfertigen & 4             & -                                                               \\
+            I            & WLAN Setup Implementierung                & 5             & Noch mit Arduino Framework geschrieben, musste verworfen werden \\
+            I            & Frontend Komprimierung Hilfestellung      & 4             & Speicherplatz reduzieren                                        \\ \hline
+            \multicolumn{4}{|l|}{Woche 3}                                                                                                              \\ \hline
+            I            & WLAN Setup Implementierung                & 10            & Hier mit ESP-IDF Framework begonnen                             \\ \hline
+            \multicolumn{4}{|l|}{Woche 4}                                                                                                              \\ \hline
+            I            & WLAN Access Point Implementierung         & 4             & -                                                               \\
+            I            & Dateisystem Implementierung               & 5             & -                                                               \\ \hline
+            \multicolumn{4}{|l|}{Woche 5}                                                                                                              \\ \hline
+            I            & HTTP Service Implementierung              & 10            & REST API Funktionen                                             \\ \hline
+            \multicolumn{4}{|l|}{Woche 6}                                                                                                              \\ \hline
+            I            & HTTP Service Implementierung              & 5             & Frontentauslieferung                                            \\
+            H            & Unterstützung bei GPS Treiber             & 5             & Fehlersuche warum GPS Treiber Systemneustart verursacht         \\ \hline
+            \multicolumn{4}{|l|}{Woche 7}                                                                                                              \\ \hline
+            B            & HTTP Service Bugs beheben                 & 10            & Bufferoverlfows finden und beheben                              \\ \hline
+            \multicolumn{4}{|l|}{Woche 8}                                                                                                              \\ \hline
+            I            & HTTP REST Endpunkte Implementierung       & 5             & -                                                               \\
+            H            & GPS Treiber Debuggen                      & 5             & -                                                               \\ \hline
+        \end{tabular}
+        \label{tab:overviewPhilipp1}
+    \end{center}
+    \caption{Wochenübersicht und Stunden Philipp Thaler Teil 1}
+    I: Implementierung, D: Dokumentation, H: Hilfe/Code-Review, S: Sonstiges\\
+    F: Neuerung/Feature, B: Bug oder Verbesserung\\
+
+\end{table}
+
+\vspace{1em}
+\begin{table}[!hp]
+    \begin{center}
+        \begin{tabular}{|p{0.8cm}|p{6cm}|p{0.8cm}|p{8cm}|} \hline
+            \textbf{Typ} & \textbf{Aufgabe}                & \textbf{Std.} & \textbf{Bemerkung}                                                               \\ \hline
+            \multicolumn{4}{|l|}{Woche 9}                                                                                                                     \\ \hline
+            H            & GPS Treiber Debuggen            & 2             & Fehlersuche warum GPS Treiber Systemneustart verursacht                          \\
+            D            & REST API Spezifikationen        & 2             & API Spezifikation überarbeitet und neue Felder hinzugefügt                       \\
+            B            & HTTP-Server Bugs behoben        & 11            & API Spezifikation überarbeitet und neue Felder hinzugefügt                       \\ \hline
+            \multicolumn{4}{|l|}{Woche 10}                                                                                                                    \\ \hline
+            I            & SD-Karten Treiber Implementiert & 10            & -                                                                                \\
+            B            & HTTP-Server Bugs beheben        & 3             & HTTP-Body wurde falsch ausgelesen                                                \\ \hline
+            \multicolumn{4}{|l|}{Woche 11}                                                                                                                    \\ \hline
+            S            & Bau der Anlage                  & 6             & Oberbau                                                                          \\
+            D            & REST API Spezifikationen        & 2             & API Spezifikation überarbeitet und neue Felder hinzugefügt                       \\
+            B            & WLAN Bugs behoben               & 2             &                                                                                  \\ \hline
+            \multicolumn{4}{|l|}{Woche 12}                                                                                                                    \\ \hline
+            H            & SQLite test                     & 6             & Versuch PlatformIO auf ältere Version downzugraden um SQLite verwenden zu können \\
+            I            & HTTP Endpunkte                  & 6             & HTTP-Endpunkte gemäß Spezifikation umgesetzt                                     \\ \hline
+            \multicolumn{4}{|l|}{Woche 13}                                                                                                                    \\ \hline
+            S            & Bau der Anlage                  & 6             & Unterbau                                                                         \\
+            I            & UART ESP zu ESP                 & 14            & Aufbau der ESP Kommunikation                                                     \\ \hline
+            \multicolumn{4}{|l|}{Woche 14 bis 17}                                                                                                             \\ \hline
+            H            & UART Funktionstests             & 10            & Testen warum Kommunikation Fehlerhaft                                            \\
+            H            & Systemfunktionstests            & 10            & Zusammenbringen des gesamten Systems                                             \\
+            H            & Systemfunktionstests            & 6             & Zusammenbringen des gesamten Systems                                             \\
+            S            & Aufbau reparieren               & 1             & Unterer Servomotor hat Servohorn kaputt gemacht                                  \\
+            D            & Dokumentation                   & 10            & -                                                                                \\ \hline
+            \Xhline{3\arrayrulewidth}
+                         & Gesamt                          & 189           &                                                                                  \\ \hline
+        \end{tabular}
+    \end{center}
+    \label{tab:overviewPhilipp2}
+    \caption{Wochenübersicht und Stunden Philipp Thaler Teil 2}
+    I: Implementierung, D: Dokumentation, H: Hilfe/Code-Review, S: Sonstiges\\
+    F: Neuerung/Feature, B: Bug oder Verbesserung
+\end{table}
+\vspace{1em}
+
+\newpage

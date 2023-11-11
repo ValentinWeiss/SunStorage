@@ -1,0 +1,9 @@
+Gantt: https://www.onlinegantt.com/#/gantt
+KiCad: https://www.kicad.org/
+PlatformIO: https://platformio.org/
+Espressif: https://www.espressif.com/
+Git: https://git-scm.com/
+VSCode: https://code.visualstudio.com/
+MiKTeX: https://miktex.org/
+TeXStudio: https://www.texstudio.org/
+Falstad: https://falstad.com/circuit/

@@ -1,0 +1,6 @@
+#ifndef WRITESYSTEMSTATETASK_H
+#define WRITESYSTEMSTATETASK_H
+
+void writeSystemStateTask();
+
+#endif  // WRITESYSTEMSTATETASK_H

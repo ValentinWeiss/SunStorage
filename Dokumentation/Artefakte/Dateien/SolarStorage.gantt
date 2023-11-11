@@ -1,0 +1,544 @@
+{
+    "data": [
+        {
+            "TaskID": 1,
+            "TaskName": "Lastenheft, Gantt-Diagramm und Poster",
+            "StartDate": "2023-03-17T07:00:00.000Z",
+            "EndDate": "2023-03-31T15:00:00.000Z",
+            "Duration": 11,
+            "Progress": 100,
+            "color": "",
+            "Predecessor": "",
+            "resources": [],
+            "info": "<p><br></p>",
+            "DurationUnit": "day"
+        },
+        {
+            "TaskID": 2,
+            "TaskName": "Erste Ergebnisvorstellung",
+            "StartDate": "2023-05-26T06:00:00.000Z",
+            "EndDate": "2023-06-02T15:00:00.000Z",
+            "Duration": 6,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": "",
+            "resources": [],
+            "info": "<p><br></p>",
+            "DurationUnit": "day"
+        },
+        {
+            "TaskID": 3,
+            "TaskName": "Präsentationsvorbereitung",
+            "StartDate": "2023-06-16T06:00:00.000Z",
+            "EndDate": "2023-06-23T15:00:00.000Z",
+            "Duration": 6,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": "",
+            "resources": [],
+            "info": "<p><br></p>",
+            "DurationUnit": "day"
+        },
+        {
+            "TaskID": 4,
+            "TaskName": "Vorführung der Ergebnisse",
+            "StartDate": "2023-06-27T06:00:00.000Z",
+            "EndDate": "2023-06-30T15:00:00.000Z",
+            "Duration": 4,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": "",
+            "resources": [],
+            "info": "<p><br></p>",
+            "DurationUnit": "day"
+        },
+        {
+            "TaskID": 5,
+            "TaskName": "Dokumentation",
+            "StartDate": "2023-03-31T06:00:00.000Z",
+            "EndDate": "2023-07-17T15:00:00.000Z",
+            "Duration": 77,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": null,
+            "resources": [],
+            "info": "<p><br></p>",
+            "DurationUnit": "day"
+        },
+        {
+            "TaskID": 6,
+            "TaskName": "GUI Frontend",
+            "StartDate": "2023-03-31T06:00:00.000Z",
+            "EndDate": "2023-06-09T15:00:00.000Z",
+            "Duration": 51,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": null,
+            "resources": [
+                {
+                    "resourceId": "Valentin Weiß",
+                    "resourceName": "Valentin Weiß",
+                    "unit": 100
+                }
+            ],
+            "info": "<p><br></p>",
+            "DurationUnit": "day",
+            "subtasks": [
+                {
+                    "TaskID": 21,
+                    "TaskName": "Server aufsetzen",
+                    "StartDate": "2023-03-31T06:00:00.000Z",
+                    "EndDate": "2023-04-14T15:00:00.000Z",
+                    "Duration": 11,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Valentin Weiß",
+                            "resourceName": "Valentin Weiß",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 22,
+                    "TaskName": "API implementieren",
+                    "StartDate": "2023-04-14T06:00:00.000Z",
+                    "EndDate": "2023-04-28T15:00:00.000Z",
+                    "Duration": 11,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Philipp Thaler",
+                            "resourceName": "Philipp Thaler",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 23,
+                    "TaskName": "Dashboard, Plots",
+                    "StartDate": "2023-04-28T06:00:00.000Z",
+                    "EndDate": "2023-06-09T15:00:00.000Z",
+                    "Duration": 31,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Valentin Weiß",
+                            "resourceName": "Valentin Weiß",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 24,
+                    "TaskName": "Konfigurationen",
+                    "StartDate": "2023-04-28T06:00:00.000Z",
+                    "EndDate": "2023-06-09T15:00:00.000Z",
+                    "Duration": 31,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Matthias Unterrainer",
+                            "resourceName": "Matthias Unterrainer",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                }
+            ]
+        },
+        {
+            "TaskID": 7,
+            "TaskName": "Embedded Sofware",
+            "StartDate": "2023-03-31T06:00:00.000Z",
+            "EndDate": "2023-06-09T15:00:00.000Z",
+            "Duration": 51,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": null,
+            "resources": [
+                {
+                    "resourceId": "Felix Wagner",
+                    "resourceName": "Felix Wagner",
+                    "unit": 100
+                },
+                {
+                    "resourceId": "Johannes Treske",
+                    "resourceName": "Johannes Treske",
+                    "unit": 100
+                }
+            ],
+            "info": "<p><br></p>",
+            "DurationUnit": "day",
+            "subtasks": [
+                {
+                    "TaskID": 16,
+                    "TaskName": "Betriebssystem Implementierung",
+                    "StartDate": "2023-03-31T06:00:00.000Z",
+                    "EndDate": "2023-04-21T15:00:00.000Z",
+                    "Duration": 16,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Felix Wagner",
+                            "resourceName": "Felix Wagner",
+                            "unit": 100
+                        },
+                        {
+                            "resourceId": "Johannes Treske",
+                            "resourceName": "Johannes Treske",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 17,
+                    "TaskName": "Treiber und API Sensoren",
+                    "StartDate": "2023-05-05T06:00:00.000Z",
+                    "EndDate": "2023-05-26T15:00:00.000Z",
+                    "Duration": 16,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Felix Wagner",
+                            "resourceName": "Felix Wagner",
+                            "unit": 100
+                        },
+                        {
+                            "resourceId": "Johannes Treske",
+                            "resourceName": "Johannes Treske",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 20,
+                    "TaskName": "Datenbank/Messdatenspeicherung",
+                    "StartDate": "2023-05-05T06:00:00.000Z",
+                    "EndDate": "2023-06-02T15:00:00.000Z",
+                    "Duration": 21,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Johannes Treske",
+                            "resourceName": "Johannes Treske",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 18,
+                    "TaskName": "Servosteuerung (Ausrichtung Solarpanel)",
+                    "StartDate": "2023-06-02T06:00:00.000Z",
+                    "EndDate": "2023-06-09T15:00:00.000Z",
+                    "Duration": 6,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Felix Wagner",
+                            "resourceName": "Felix Wagner",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 19,
+                    "TaskName": "WIFI",
+                    "StartDate": "2023-04-21T06:00:00.000Z",
+                    "EndDate": "2023-05-12T15:00:00.000Z",
+                    "Duration": 16,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Philipp Thaler",
+                            "resourceName": "Philipp Thaler",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                }
+            ]
+        },
+        {
+            "TaskID": 8,
+            "TaskName": "Ladesteuergerät",
+            "StartDate": "2023-03-31T06:00:00.000Z",
+            "EndDate": "2023-05-12T15:00:00.000Z",
+            "Duration": 31,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": null,
+            "resources": [
+                {
+                    "resourceId": "Lukas Eigenstetter",
+                    "resourceName": "Lukas Eigenstetter",
+                    "unit": 100
+                }
+            ],
+            "info": "<p><br></p>",
+            "DurationUnit": "day",
+            "subtasks": [
+                {
+                    "TaskID": 10,
+                    "TaskName": "Informations- und Hardwarebeschaffung",
+                    "StartDate": "2023-03-31T06:00:00.000Z",
+                    "EndDate": "2023-04-07T15:00:00.000Z",
+                    "Duration": 6,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Lukas Eigenstetter",
+                            "resourceName": "Lukas Eigenstetter",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 11,
+                    "TaskName": "Reglerlogik implementieren",
+                    "StartDate": "2023-04-07T06:00:00.000Z",
+                    "EndDate": "2023-05-12T15:00:00.000Z",
+                    "Duration": 26,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Lukas Eigenstetter",
+                            "resourceName": "Lukas Eigenstetter",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                }
+            ]
+        },
+        {
+            "TaskID": 9,
+            "TaskName": "Hardware Aufbau",
+            "StartDate": "2023-03-31T06:00:00.000Z",
+            "EndDate": "2023-06-23T15:00:00.000Z",
+            "Duration": 61,
+            "Progress": 0,
+            "color": "",
+            "Predecessor": null,
+            "resources": [
+                {
+                    "resourceId": "Matthias Unterrainer",
+                    "resourceName": "Matthias Unterrainer",
+                    "unit": 100
+                }
+            ],
+            "info": "<p><br></p>",
+            "DurationUnit": "day",
+            "subtasks": [
+                {
+                    "TaskID": 13,
+                    "TaskName": "Entwicklungsumgebung aufsetzen",
+                    "StartDate": "2023-03-31T06:00:00.000Z",
+                    "EndDate": "2023-04-14T15:00:00.000Z",
+                    "Duration": 11,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Matthias Unterrainer",
+                            "resourceName": "Matthias Unterrainer",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 14,
+                    "TaskName": "Sensor, Solarpanel, Akku und Ladesteuergerät Aufbau",
+                    "StartDate": "2023-04-14T06:00:00.000Z",
+                    "EndDate": "2023-05-29T15:00:00.000Z",
+                    "Duration": 32,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Matthias Unterrainer",
+                            "resourceName": "Matthias Unterrainer",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 12,
+                    "TaskName": "USB-Schnittstelle integrieren",
+                    "StartDate": "2023-05-29T06:00:00.000Z",
+                    "EndDate": "2023-06-19T15:00:00.000Z",
+                    "Duration": 16,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Johannes Treske",
+                            "resourceName": "Johannes Treske",
+                            "unit": 100
+                        },
+                        {
+                            "resourceId": "Matthias Unterrainer",
+                            "resourceName": "Matthias Unterrainer",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                },
+                {
+                    "TaskID": 15,
+                    "TaskName": "Bau der Hülle",
+                    "StartDate": "2023-05-29T06:00:00.000Z",
+                    "EndDate": "2023-06-23T15:00:00.000Z",
+                    "Duration": 20,
+                    "Progress": 0,
+                    "color": "",
+                    "Predecessor": "",
+                    "resources": [
+                        {
+                            "resourceId": "Matthias Unterrainer",
+                            "resourceName": "Matthias Unterrainer",
+                            "unit": 100
+                        }
+                    ],
+                    "info": "<p><br></p>",
+                    "DurationUnit": "day"
+                }
+            ]
+        }
+    ],
+    "resources": [
+        {
+            "resourceId": "Felix Wagner",
+            "resourceName": "Felix Wagner"
+        },
+        {
+            "resourceId": "Johannes Treske",
+            "resourceName": "Johannes Treske"
+        },
+        {
+            "resourceId": "Lukas Eigenstetter",
+            "resourceName": "Lukas Eigenstetter"
+        },
+        {
+            "resourceId": "Matthias Unterrainer",
+            "resourceName": "Matthias Unterrainer"
+        },
+        {
+            "resourceId": "Philipp Thaler",
+            "resourceName": "Philipp Thaler"
+        },
+        {
+            "resourceId": "Valentin Weiß",
+            "resourceName": "Valentin Weiß"
+        }
+    ],
+    "projectStartDate": null,
+    "projectEndDate": null,
+    "advanced": {
+        "columns": [
+            {
+                "name": "Task ID",
+                "width": "70",
+                "show": true
+            },
+            {
+                "name": "Task Name",
+                "width": "350",
+                "show": true
+            },
+            {
+                "name": "Start Date",
+                "width": "130",
+                "show": false
+            },
+            {
+                "name": "End Date",
+                "width": "130",
+                "show": false
+            },
+            {
+                "name": "Duration",
+                "width": "130",
+                "show": false
+            },
+            {
+                "name": "Progress %",
+                "width": "150",
+                "show": false
+            },
+            {
+                "name": "Dependency",
+                "width": "150",
+                "show": false
+            },
+            {
+                "name": "Resources",
+                "width": "200",
+                "show": false
+            },
+            {
+                "name": "Color",
+                "width": "100",
+                "show": false
+            }
+        ],
+        "firstDayOfWeek": 0,
+        "workWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+        ],
+        "holidays": []
+    }
+}

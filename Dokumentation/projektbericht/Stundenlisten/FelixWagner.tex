@@ -1,0 +1,78 @@
+\vspace{1em}
+\begin{table}[!hp]
+    \begin{center}
+    \begin{tabular}{|l|p{4.5cm}|p{1cm}|p{9cm}|} \hline
+        \textbf{Typ} & \textbf{Aufgabe} & \textbf{Std.} & \textbf{Bemerkung} \\ \hline
+
+        \multicolumn{4}{|l|}{Woche 1}                                                                       \\ \hline
+        D           &   Requirements sammeln & 6 & -                                                        \\ \hline
+        \multicolumn{4}{|l|}{Woche 2}                                                                       \\ \hline
+        D           & Projektnamen finden   & 2         & -                                                 \\ \hline
+        D           & Poster erstellen      & 6         & -                                                 \\ \hline
+        \multicolumn{4}{|l|}{Woche 3}                                                                       \\ \hline
+        F           & Algorithmus für Azimut und Elevation & 5 & -                                         \\ \hline
+        \multicolumn{4}{|l|}{Woche 4}                                                                       \\ \hline
+        S           & Recherche Servomotoren & 6        & Modelcraft ES-05                                  \\ \hline
+        F           & Berechnung Servostellungen  & 8   & 180° Drehung auf 360° Abdeckung                   \\ \hline
+        \multicolumn{4}{|l|}{Woche 5}                                                                       \\ \hline
+        IF           & PWM-Signal Generierung & 8        & MCPWM aufsetzten                                 \\ \hline
+        \multicolumn{4}{|l|}{Woche 6}                                                                       \\ \hline
+        IB           & PWM-Signal über LEDC  & 4         & MCPWM führt zu Neustarts                         \\ \hline
+        \multicolumn{4}{|l|}{Woche 7}                                                                       \\ \hline
+        IF           & Kompassdaten verarbeiten & 10 & Kalibrierung und Berechnung der Nordabweichung       \\ \hline
+        \multicolumn{4}{|l|}{Woche 8}                                                                       \\ \hline
+        S           & Testen Bluebird L530MG Servos & 4 & ES-05 erwiesen sich als zu schwach                \\ \hline
+        S           & Gyroskopsensor testen & 6 & Nutzen von Beschleunigungswerten und Verarbeitung planen \\ \hline
+        S           & Recherche zu Ausrichtealgorithmen & 8 & Versuche über Winkeladdition und Projektion   \\\hline
+        \multicolumn{4}{|l|}{Woche 9}                                                                       \\ \hline
+        S           & Ausrichtealgorithmus über Ebenen & 10 & Testen theoretischer Funktion                   \\ \hline
+        IF          & Implementierung des Algorithmus & 5 & Umwandlung verfügbarer Werte nötig              \\ \hline
+    \end{tabular}
+    \caption{Wochenübersicht und Stunden Felix Wagner Teil 1}
+    	\label{tab:overviewFelix}
+    	\end{center}
+        I: Implementierung, D: Dokumentation, H: Hilfe/Code-Review, S: Sonstiges\\
+        F: Neuerung/Feature, B: Bug oder Verbesserung\\
+\end{table}
+\vspace{1em}
+
+\vspace{1em}
+\begin{table}[!hp]
+\begin{center}
+    \begin{tabular}{|l|p{4.5cm}|p{1cm}|p{9cm}|} \hline
+        \textbf{Typ} & \textbf{Aufgabe} & \textbf{Std.} & \textbf{Bemerkung} \\ \hline
+        \multicolumn{4}{|l|}{Woche 10}                                                                      \\ \hline
+        S           & Anpassungen am Aufbau vornehmen & 4 & Kabelführung der Servos anpassen                           \\ \hline
+        HB          & Testen Ausrichtealgorithmus & 8 & Simulation mit Geogebra und Vergleichen von Testwerten \\ \hline
+        \multicolumn{4}{|l|}{Woche 11}                                                                      \\ \hline
+        B           & Korrektur Kompasswerte bei Schieflage & 6 & Vektorprojektion mit Beschleunigungswerten\\ \hline
+        \multicolumn{4}{|l|}{Woche 12}                                                                      \\ \hline
+        IB           & Verbesserungen am Code & 3 & Unterstützung durch Lukas                                                 \\ \hline
+        I           & Task für Sonnenverfolgung & 6 & Aktuelle Sensordaten auslesen und Werte verarbeiten \\ \hline
+        HB          & Debugging GPS-Treiber & 3 & - \\ \hline
+        \multicolumn{4}{|l|}{Woche 13}                                                                      \\ \hline
+        I           & Tasks für Haupt- und Neben-ESP & 4 & Kommunikation über UART benutzen       \\ \hline
+        IB          & Servoansteuerung mittels MCPWM & 6 & Probleme bei PWM-Signal an mehreren Ports und Frequenzbereich einstellen\\ \hline
+        HB          & Fehler in Sonnenposition beheben & 3 & Valentin helfen                                \\ \hline
+        D           & Präsentation vorbereiten & 7 & -                                                      \\ \hline
+        S           & Testen von manuellen Modus & 5 & Anpassen von Taskkommunikation zwischen  Controllern        \\ \hline
+        \multicolumn{4}{|l|}{Woche 14}                                                                      \\ \hline
+        B           & Rotationsberechnung vereinfachen & 2 & Berechnung über Tangens                        \\ \hline
+        B           & Korrektur Sonnenposition in Ausrichtealgorithmus & 2 & Vektor aus Azimut normieren   \\ \hline
+        BS          & Verbesserten Ausrichtealgorithmus prüfen & 2 & nicht implementiert                    \\ \hline
+        \multicolumn{4}{|l|}{Woche 15}                                                                      \\ \hline
+        D           & Dokumentation schreiben & 14 & -                                                       \\ \hline
+        \Xhline{3\arrayrulewidth}
+            & Gesamt & 163 & \\ \hline
+    \end{tabular}
+    \label{tab:overviewFelix2}
+\caption{Wochenübersicht und Stunden Felix Wagner Teil 2}
+\label{tab:overviewFelix}
+\end{center}
+I: Implementierung, D: Dokumentation, H: Hilfe/Code-Review, S: Sonstiges\\
+F: Neuerung/Feature, B: Bug oder Verbesserung\\
+\end{table}
+\vspace{1em}
+
+
+\newpage

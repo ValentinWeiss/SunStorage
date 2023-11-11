@@ -1,0 +1,34 @@
+\subsubsection{SPI Flash File System}
+\chapterauthor{Philipp Thaler}
+Das Serial Peripheral Interface Flash File System (SPIFFS) ist ein einfaches Dateisystem, welches für Mikrokontroller mit einem SPI Flash Chip geeignet ist. Das verwendete ESP-32 Board von AZ-Delivery stellt insgesamt 4MB Speicherplatz zur Verfügung.
+SPIFFS unterstützt das Wear-Leveling. Dies dient dazu, dass die Lebensdauer für Flash-Speicher oder anderer ähnlich aufgebauten Speicherarchitekturen verlängert wird.
+
+Eine Eigenheit des Dateisystems ist, wie es mit Ordnerstrukturen umgeht. Erstellt man eine Datei in einem Ordner, so wird kein Ordner erstellt wie man es von Windows oder Linux kennt. Es wird eine Datei erstellt, die mit dem Namen des Ordners versehen wird.
+Zum Beispiel erstellt man eine Datei im Ordner Frontend, dann wird die Datei \glqq /Frontend/index.html\grqq{} im SPIFFS genannt.
+Dadurch weiß das Dateisystem, wenn der Benutzer über den vermeintlichen Ordner Frontend auf die index.html Datei zugreifen möchte, welche Datei es ansprechen muss.
+Auch gibt es Probleme beim Löschen einer Datei. Hier kann es dazu kommen, dass SPIFFS die Datei nicht vollständig löscht und es zu nicht mehr nutzbaren Sektoren im Speicher kommt.
+
+Im Projekt wird das SPI-Dateisystem genutzt, um die Dateien der Webseite zu speichern. Zunächst wird dazu eine Datei mit den definierten Partitionen erstellt, die \glqq partitions.csv\grqq{} heißt. Diese gibt dem Dateisystem vor, wie viel Speicher welcher Partition zugewiesen wird.
+Da das SPIFFS nur etwa 75\% des angegebenen Speichers belegen kann, ist der Speicher etwas großzügiger vergeben. In der \glqq partitions.csv\grqq{} sind die Partitionen aufgelistet die erstellt werden, sobald das Dateisystem gebaut wird \autocite{espidf:SPIFFS}.
+
+Die Partitionstabelle wird mit dem Offset 0x8000 in den Flash geschrieben. Jeder Eintrag in der Partitionstabelle hat einen Namen, Typ, Untertyp und einen Offset ab dem er in den Flash geschrieben wird.
+In diesem Fall sind keine Offsets vergeben. Hier entscheidet das Dateisystem selbst an welche Stelle die Partition geschrieben wird.
+
+Zunächst wird für den Non-volatile Storage (nvs) eine Partition erstellt. Diese ist sechs Kilobyte groß. Hier können Key Value Paare gespeichert werden.
+Unter dem Namen \glqq phy\_init\grqq{} wird die physikalische Sicht initialisiert. Diese wird genutzt um generelle Netzwerktätigkeiten verfügbar zu machen. Die Größe hier beträgt vier Kilobyte.
+
+Als Vorletztes wird die Applikation definiert. Diese wird mit dem Kürzel  \glqq factory\grqq{} in der Partitionstabelle aufgeführt. Die dort abgelegten Dateien werden beim Start des ESP32 vom Bootloader ausgeführt. Die Größe dieser Partition beträgt ein Megabyte.
+Den größten Platz mit zwei Megabyte wird SPIFFS zugewiesen. Hier werden die Dateien, die aus dem Buildprozess der Webseite erstellt werden, abgelegt. Da ReactJS sehr große Build-Artefake erzeugt, ist es notwendig die Partition am größten zu wählen.
+
+Um das Dateisystem zu erstellen wird die Visual Studio Code Erweiterung PlatfromIO verwendet. In der \glqq platformio.ini\grqq{} Datei wird die \glqq partitions.csv\grqq{} als neue Partitionstabelle hinterlegt.
+Somit kann PlatformIO die Partitionen direkt ableiten und entsprechend erstellen.
+Damit der Compiler, in diesem Fall CMake, weiß welche externen Dateien zum Bauen des Dateisystems verwendet werden sollen, wird in der CMakeLists.txt im src-Ordner ein Befehl eingefügt.
+Der Befehl gibt an, dass aus dem \glqq data\grqq{} Ordner die statischen Dateien der Webseite verwendet werden sollen.
+Nach dem erfolgreichen Erstellen des Dateisystems, wird es mit Hilfe von PlatformIO auf die ESP32 Platine geladen.
+
+Die Inizialisierungsfunktion für SPIFFS wird aus der app\_main-Funktion aufgerufen. Es wird eine spiffsConfig erstellt. Diese beinhaltet den Pfad unter dem das Dateisystem bereitgestellt wird. Die Partitionsbezeichnung und auch die maximale Anzahl an Dateien wird der Konfiguration übergeben.
+Wenn benötigt, kann hier eingestellt werden, dass das Dateisystem formatiert wird sollte das mounten nicht ordnungsgemäß ausgeführt werden.
+
+Nach dem Erstellen der Konfiguration wird diese dem Registrierungsbefehl übergeben. Dieser wird von dem ESP-IDF Framework bereitgestellt. Es folgen Fehlerüberprüfungen und eine Überprüfung wie viel Speicher bereits belegt ist und wie viel Speicher noch verfügbar ist.
+Nach der erfolgreichen Ausführung stehen die Dateien dem System bereit und können gelesen und bearbeitet werden.
+
